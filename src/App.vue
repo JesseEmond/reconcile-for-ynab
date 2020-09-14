@@ -4,9 +4,19 @@
       <router-link to="/">Home</router-link> |
       <router-link to="/about">About</router-link>
     </div>
-    <router-view/>
+    <router-view :store="store" />
   </div>
 </template>
+
+<script>
+export default {
+  data: function() {
+    return {
+      store: {}
+    };
+  }
+}
+</script>
 
 <style lang="scss">
 #app {

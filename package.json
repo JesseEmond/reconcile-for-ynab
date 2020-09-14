@@ -11,7 +11,9 @@
     "core-js": "^3.6.5",
     "register-service-worker": "^1.7.1",
     "vue": "^2.6.11",
-    "vue-router": "^3.2.0"
+    "vue-material": "^1.0.0-beta-15",
+    "vue-router": "^3.2.0",
+    "ynab": "^1.20.0"
   },
   "devDependencies": {
     "@vue/cli-plugin-babel": "~4.5.0",
