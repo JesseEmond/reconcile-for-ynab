@@ -23,13 +23,12 @@ export default {
 }
 </script>
 
-<style>
+<style lang="scss">
 @import url("https://fonts.googleapis.com/css?family=Material+Icons");
 @import url("https://fonts.googleapis.com/css?family=Roboto+Condensed:300,400,500,700,400italic");
 @import url("https://fonts.googleapis.com/css?family=Eczar:300,400,500,700,400italic");
-
 #app {
-
+  font-family: $text-font-family;
 }
 .md-app-content {
   padding-left: 0;
