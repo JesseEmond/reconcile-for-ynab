@@ -1,42 +1,38 @@
 <template>
-  <div id="app">
-    <div id="nav">
-      <router-link to="/">Home</router-link> |
-      <router-link to="/about">About</router-link>
-    </div>
-    <router-view :store="store" />
+  <div class="page-container">
+    <md-app md-mode="fixed" id="app">
+      <md-app-toolbar>
+        <span class="md-title">YNAB Reconcile</span>
+      </md-app-toolbar>
+
+      <md-app-content>
+        <router-view :store="store" />
+      </md-app-content>
+    </md-app>
   </div>
 </template>
 
 <script>
+import store from './store'
 export default {
   data: function() {
     return {
-      store: {}
+      store: store
     };
   }
 }
 </script>
 
-<style lang="scss">
+<style>
+@import url("https://fonts.googleapis.com/css?family=Material+Icons");
+@import url("https://fonts.googleapis.com/css?family=Roboto+Condensed:300,400,500,700,400italic");
+@import url("https://fonts.googleapis.com/css?family=Eczar:300,400,500,700,400italic");
+
 #app {
-  font-family: Avenir, Helvetica, Arial, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  text-align: center;
-  color: #2c3e50;
+
 }
-
-#nav {
-  padding: 30px;
-
-  a {
-    font-weight: bold;
-    color: #2c3e50;
-
-    &.router-link-exact-active {
-      color: #42b983;
-    }
-  }
+.md-app-content {
+  padding-left: 0;
+  padding-right: 0;
 }
 </style>

@@ -10,7 +10,7 @@ async function get_open_accounts(ynab) {
   return accounts.filter(acc => !acc.closed);
 }
 
-async function get_accounts(ynab) {
+async function get_accounts() {
   // TODO: error handling?
   // TODO: call API 
   return get_fake_accounts();
@@ -40,3 +40,5 @@ function get_fake_accounts() {
     },
   ];
 }
+
+export default { get_open_accounts_by_type }
