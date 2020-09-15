@@ -1,36 +1,18 @@
 <template>
   <div>
-    <md-list class="accounts-list">
-      <md-subheader>Budget Accounts</md-subheader>
-      <md-list-item v-for="account in budget_accounts" :key="account.key"
-         @click="selectAccount(account)">
-        <account-summary :account="account" />
-      </md-list-item>
-      <md-list-item v-if="!budget_accounts.length" class="empty-accounts-list">
-        No budget accounts.
-      </md-list-item>
-    </md-list>
+    <account-list :accounts="budget_accounts" subheader-content="Budget Accounts"
+      no-accounts-content="No budget accounts." />
 
-    <md-divider></md-divider>
-
-    <md-list class="accounts-list">
-      <md-subheader>Tracking Accounts</md-subheader>
-      <md-list-item v-for="account in tracking_accounts" :key="account.key"
-        @click="selectAccount(account)">
-        <account-summary :account="account" />
-      </md-list-item>
-      <md-list-item v-if="!tracking_accounts.length" class="empty-accounts-list">
-        No tracking accounts.
-      </md-list-item>
-    </md-list>
+    <account-list :accounts="tracking_accounts" subheader-content="Tracking Accounts"
+      no-accounts-content="No tracking accounts." />
   </div>
 </template>
 
 <script>
-// TODO: handle empty lists of accounts
-import AccountSummary from "../components/AccountSummary"
+import AccountList from "../components/AccountList"
 
 import accounts from "../api/accounts"
+import transactions from "../api/transactions"
 
 export default {
   name: 'Home',
@@ -38,7 +20,7 @@ export default {
     store: Object
   },
   components: {
-    AccountSummary
+    AccountList
   },
   computed: {
     budget_accounts: function() {
@@ -52,23 +34,15 @@ export default {
     const {budget, tracking} = await accounts.get_open_accounts_by_type(this.store.ynab)
     this.store.state.accounts.budget = budget
     this.store.state.accounts.tracking = tracking
+    budget.forEach(this.fetchTransactions)
+    tracking.forEach(this.fetchTransactions)
   },
   methods: {
-    selectAccount: function(account) {
-      console.log("GOTO", account);
-    },
+    fetchTransactions: async function(account) {
+      const {cleared, uncleared} = await transactions.get_account_transactions_by_type(
+        this.store.ynab, account.id)
+      account.transactions = { cleared, uncleared }
+    }
   },
 }
 </script>
-
-<style type="text/css" scoped>
-  .md-subheader {
-    font-weight: bold;
-  }
-  .accounts-list {
-    width: 100%;
-  }
-  .empty-accounts-list {
-    font-style: italic;
-  }
-</style>

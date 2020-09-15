@@ -1,10 +1,29 @@
 <template>
   <div class="md-list-item-content account-summary">
     <md-content class="account-marker md-primary"></md-content>
-    <div class="account-info md-list-item-text">
+    <div class="account-info">
       <span>{{account.name}}</span>
-      <span class="md-caption">4 unreconciled transactions</span>
+
+      <div class="transactions-status">
+        <span v-if="!account.transactions">
+          Loading...
+        </span>
+        <span v-else-if="cleared_transactions.length">
+          <span class="transaction-count">
+            <md-badge class="md-primary md-square" :md-content="cleared_transactions.length"/>
+          </span>
+          unreconciled transactions
+        </span>
+        <span v-else-if="uncleared_transactions.length">
+          <span class="transaction-count">
+            <md-badge class="md-primary md-square" :md-content="uncleared_transactions.length"/>
+          </span>
+          uncleared transactions
+        </span>
+        <span v-else class="reconciled-state">Reconciled</span>
+      </div>
     </div>
+
     <div class="currency md-list-item-text">
       <span :class="{positive: balance >= 0, negative: balance < 0}">
         {{formatBalance(balance)}}
@@ -20,14 +39,20 @@ const ynab = require("ynab");
 export default {
   name: 'AccountSummary',
   props: {
-    account: Object
+    account: Object,
   },
   computed: {
     balance: function() {
       const balanceMilliunits = this.account.cleared_balance
       return ynab.utils.convertMilliUnitsToCurrencyAmount(
         balanceMilliunits, /*currencyDecimalDigits=*/2)
-    }
+    },
+    cleared_transactions: function() {
+      return this.account.transactions.cleared || []
+    },
+    uncleared_transactions: function() {
+      return this.account.transactions.uncleared || []
+    },
   },
   methods: {
     formatBalance: function(balance) {
@@ -56,6 +81,18 @@ export default {
 }
 .account-info {
   flex: 1.5;
+}
+.transactions-status {
+  font-size: 14px;
+  color: $color-medium-emphasis;
+  vertical-align: text-bottom;
+  padding-top: 2px;
+}
+.transaction-count {
+  display: inline-flex;
+}
+.reconciled-state {
+  color: $color-disabled;
 }
 .currency {
   font-family: $numbers-font-family;

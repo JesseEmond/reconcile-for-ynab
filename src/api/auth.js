@@ -10,7 +10,11 @@ function oauth_login() {
 }
 
 function dev_login() {
-  return process.env.VUE_APP_YNAB_PERSONAL_ACCESS_TOKEN_KEEP_PRIVATE;
+  const access_token = process.env.VUE_APP_YNAB_PERSONAL_ACCESS_TOKEN_KEEP_PRIVATE
+  if (access_token) {
+    console.log("Using dev personal access token.")
+  }
+  return access_token
 }
 
 export default {

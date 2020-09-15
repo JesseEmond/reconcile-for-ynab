@@ -1,0 +1,52 @@
+<template>
+  <md-list class="accounts-list">
+    <md-subheader>{{subheaderContent}}</md-subheader>
+    <div v-for="account in accounts" :key="account.key">
+      <md-list-item @click="selectAccount(account)">
+        <account-summary :account="account" />
+      </md-list-item>
+      <md-divider></md-divider>
+    </div>
+    <md-list-item v-if="!accounts.length" class="empty-accounts-list">
+      {{noAccountsContent}}
+    </md-list-item>
+  </md-list>
+</template>
+
+<script>
+// TODO: loading state
+import AccountSummary from "./AccountSummary"
+
+export default {
+  name: 'AccountList',
+  props: {
+    accounts: Array,
+    subheaderContent: String,
+    noAccountsContent: String,
+  },
+  components: {
+    AccountSummary
+  },
+  methods: {
+    selectAccount: function(account) {
+      console.log("GOTO", account);
+    },
+  },
+}
+</script>
+
+<style type="text/css" scoped>
+  .md-subheader {
+    font-weight: bold;
+  }
+  .accounts-list {
+    width: 100%;
+  }
+  .md-divider {
+    margin-left: 16px;
+    margin-right: 16px;
+  }
+  .empty-accounts-list {
+    font-style: italic;
+  }
+</style>
