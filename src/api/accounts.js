@@ -20,7 +20,8 @@ async function get_accounts(ynab) {
       console.log("Faking account balances!")
       accounts.forEach(function(account) {
         const randomBalance = Math.random() * 1000.0 - 300.0
-        const balanceMilliunits = randomBalance * 1000.0
+        const roundedBalance = Math.round(randomBalance * 100) / 100
+        const balanceMilliunits = roundedBalance * 1000.0
         account.cleared_balance = balanceMilliunits
       })
     }

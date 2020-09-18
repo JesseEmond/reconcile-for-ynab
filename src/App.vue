@@ -2,6 +2,7 @@
   <div class="page-container">
     <md-app md-mode="fixed" id="app">
       <md-app-toolbar>
+        <!-- TODO use icons? "back" button? -->
         <span class="md-title">YNAB Reconcile</span>
       </md-app-toolbar>
 

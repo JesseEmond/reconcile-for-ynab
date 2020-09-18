@@ -1,18 +1,28 @@
 <template>
   <div class="container">
     <p class="md-title">{{account.name}}</p>
-    <currency id="balance" class="balance" editable v-model="balance"
-      :autowidth="{maxWidth: '90%', minWidth: '100px', comfortZone: 10}" />
-    <!--<div>TODO warning when diff balance that this will create transaction</div>-->
-    <p class="transactions-summary md-subheading">
-      <span v-if="transactions">
-        {{transactions.cleared.length}} cleared (to reconcile),
-        {{transactions.uncleared.length}} uncleared transactions
+    <currency id="balance" class="balance" editable v-model="current_balance"
+      :autowidth="{maxWidth: '90%', minWidth: '100px', comfortZone: 10}"
+      :clearable="current_balance != server_balance" @reset="onReset">
+    </currency>
+    <div :style="{visibility: reconciliation_transaction != 0 ? 'visible' : 'hidden'}">
+      <md-icon class="md-primary">info</md-icon>
+      <span class="md-subheading">
+        A reconciliation transaction of 
+        <currency :value="reconciliation_transaction"></currency>
+        will be created.
       </span>
-      <span v-else>
+    </div>
+    <div class="transactions">
+      <transaction-list v-if="transactions" class="transactions-list md-elevation-4"
+        :cleared="transactions.cleared" :uncleared="transactions.uncleared">
+      </transaction-list>
+      <!-- TODO: show summary of changes that will happen -->
+      <!-- TODO: when there are no transactions? -->
+      <p class="md-subheading" v-else>
         Loading transactions...
-      </span>
-    </p>
+      </p>
+    </div>
     <div class="actions-area">
       <!-- TODO implement actions -->
       <md-button>Cancel</md-button>
@@ -23,6 +33,7 @@
 
 <script>
 import Currency from '../components/Currency'
+import TransactionList from '../components/TransactionList'
 
 export default {
   name: 'Account',
@@ -32,7 +43,7 @@ export default {
   },
   data() {
     return {
-      balance: 0,
+      current_balance: 0,
     }
   },
   computed: {
@@ -44,15 +55,22 @@ export default {
     transactions() {
       return this.account.transactions
     },
+    server_balance() {
+      return this.account.cleared_balance
+    },
+    reconciliation_transaction() {
+      return this.current_balance - this.server_balance 
+    }
   },
-  components: {
-    Currency,
-  },
+  components: { Currency, TransactionList },
   created() {
     // TODO: on load, refresh this account's info from API?
-    this.balance = this.account.cleared_balance
+    this.onReset()
   },
   methods: {
+    onReset() {
+      this.current_balance = this.server_balance
+    },
   },
 }
 </script>
@@ -62,8 +80,8 @@ export default {
   .currency-field.md-field {
     font-size: 64px;
   }
-  .md-input-action {
-    top: 30px;
+  .md-button {
+    top: 10px;
   }
   .md-prefix {
     font-size: 40px;
@@ -78,6 +96,7 @@ export default {
 
 <style lang="scss" scoped>
 .container {
+  width: 100%;
   flex: 1;
   display: flex;
   flex-direction: column;
@@ -85,16 +104,20 @@ export default {
   justify-content: flex-start;
 }
 .md-title {
+  margin-top: 25px;
   font-size: 40px;
-  margin-top: 10vh;
-  margin-bottom: 10px;
-}
-.transactions-summary {
-  margin-top: 5vh;
-  flex-grow: 1;
+  margin-bottom: 5px;
 }
 .balance {
   max-width: 90%;
+}
+.transactions {
+  padding-top: 8px;
+  flex-grow: 1;
+  width: 100%;
+}
+.transactions-list {
+  height: 45vh;
 }
 .actions-area {
   align-items: flex-end;
