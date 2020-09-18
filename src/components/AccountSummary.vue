@@ -24,28 +24,27 @@
       </div>
     </div>
 
-    <div class="currency md-list-item-text">
-      <span :class="{positive: balance >= 0, negative: balance < 0}">
-        {{formatBalance(balance)}}
-      </span>
+    <div class="balance md-list-item-text">
+      <currency :value="balance" />
     </div>
     <md-icon>chevron_right</md-icon>
   </div>
 </template>
 
 <script>
-const ynab = require("ynab");
+import Currency from './Currency'
 
 export default {
   name: 'AccountSummary',
   props: {
     account: Object,
   },
+  components: {
+    Currency,
+  },
   computed: {
     balance: function() {
-      const balanceMilliunits = this.account.cleared_balance
-      return ynab.utils.convertMilliUnitsToCurrencyAmount(
-        balanceMilliunits, /*currencyDecimalDigits=*/2)
+      return this.account.cleared_balance
     },
     cleared_transactions: function() {
       return this.account.transactions.cleared || []
@@ -54,15 +53,6 @@ export default {
       return this.account.transactions.uncleared || []
     },
   },
-  methods: {
-    formatBalance: function(balance) {
-      // TODO: move to helper
-      // TODO: follow preferences in YNAB account
-      const fmt = new Intl.NumberFormat("en-US",
-        { style: "currency", currency: "USD" })
-      return fmt.format(balance)
-    }
-  }
 }
 </script>
 
@@ -94,15 +84,8 @@ export default {
 .reconciled-state {
   color: $color-disabled;
 }
-.currency {
-  font-family: $numbers-font-family;
+.balance {
   text-align: right;
   font-size: 22px;
-}
-.currency .positive {
-  color: green;
-}
-.currency .negative {
-  color: red;
 }
 </style>

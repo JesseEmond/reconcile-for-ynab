@@ -11,6 +11,8 @@
     "core-js": "^3.6.5",
     "register-service-worker": "^1.7.1",
     "vue": "^2.6.11",
+    "vue-currency-input": "^1.22.3",
+    "vue-input-autowidth": "^1.0.10",
     "vue-material": "^1.0.0-beta-15",
     "vue-router": "^3.2.0",
     "ynab": "^1.20.0"

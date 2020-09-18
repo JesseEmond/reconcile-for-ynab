@@ -29,8 +29,10 @@ export default {
 @import url("https://fonts.googleapis.com/css?family=Eczar:300,400,500,700,400italic");
 #app {
   font-family: $text-font-family;
+  min-height: 100vh;
 }
 .md-app-content {
+  display: flex;
   padding-left: 0;
   padding-right: 0;
 }

@@ -2,7 +2,7 @@
   <md-list class="accounts-list">
     <md-subheader>{{subheaderContent}}</md-subheader>
     <div v-for="account in accounts" :key="account.key">
-      <md-list-item @click="selectAccount(account)">
+      <md-list-item @click="onSelect(account)">
         <account-summary :account="account" />
       </md-list-item>
       <md-divider></md-divider>
@@ -14,7 +14,6 @@
 </template>
 
 <script>
-// TODO: loading state
 import AccountSummary from "./AccountSummary"
 
 export default {
@@ -23,14 +22,10 @@ export default {
     accounts: Array,
     subheaderContent: String,
     noAccountsContent: String,
+    onSelect: Function,
   },
   components: {
     AccountSummary
-  },
-  methods: {
-    selectAccount: function(account) {
-      console.log("GOTO", account);
-    },
   },
 }
 </script>
