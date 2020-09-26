@@ -1,7 +1,7 @@
 <template>
   <span class="currency"
     :class="{positive: value >= 0, negative: value < 0}">
-    <span v-if="!editable">{{formatted}}</span>
+    <span v-if="!editable">{{formatValue(initialValue, true)}}</span>
     <md-field v-else class="currency-field" :class="field_classes">
       <span class="md-prefix">$</span> <!--TODO: use configured currency symbol -->
       <auto-width-input id="balance-input" class="currency-input"
@@ -52,7 +52,7 @@ export default {
   watch: {
     initialValue: {
       handler(val) {
-        this.text = from_milliunits(val).toString()
+        this.text = this.formatValue(val, false)
       },
       immediate: true,
     },
@@ -72,25 +72,30 @@ export default {
     value() {
       return parse(this.text, this.currency_options)
     },
-    formatted() {
-      const currency = from_milliunits(this.initialValue)
-      // TODO: follow preferences in YNAB account
-      const fmt = new Intl.NumberFormat("en-US",
-        { style: "currency", currency: "USD" })
-      return fmt.format(currency)
-    },
   },
   methods: {
+    formatValue(milliunits, showCurrency) {
+      const currency = from_milliunits(milliunits)
+      let options = {};
+      if (showCurrency) {
+        // TODO: follow preferences in YNAB account
+        options = { style: "currency", currency: "USD" }
+      } else {
+        options = { style: "decimal", minimumFractionDigits: 2 }
+      }
+      const fmt = new Intl.NumberFormat("en-US", options)
+      return fmt.format(currency)
+    },
     onClear() {
-      this.$emit('reset')
+      this.text = this.formatValue(this.initialValue, false)
     },
   },
 }
 </script>
 
 <style lang="scss" scoped>
-$positive-color: green;
-$negative-color: red;
+$positive-color: #4caf50;
+$negative-color: #ff5252;
 
 .currency {
   font-family: $numbers-font-family;

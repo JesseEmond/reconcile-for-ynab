@@ -20,6 +20,6 @@ function dev_login() {
 export default {
   get_api: async function() {
     const access_token = await get_access_token();
-  return new ynab.API(access_token);
+    return new ynab.API(access_token);
   }
 }

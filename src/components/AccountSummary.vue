@@ -12,13 +12,13 @@
           <span class="transaction-count">
             <md-badge class="md-primary md-square" :md-content="cleared_transactions.length"/>
           </span>
-          unreconciled transactions
+          unreconciled {{pluralize('transaction', cleared_transactions.length)}}
         </span>
         <span v-else-if="uncleared_transactions.length">
           <span class="transaction-count">
             <md-badge class="md-primary md-square" :md-content="uncleared_transactions.length"/>
           </span>
-          uncleared transactions
+          uncleared {{pluralize('transaction', uncleared_transactions.length)}}
         </span>
         <span v-else class="reconciled-state">Reconciled</span>
       </div>
@@ -52,6 +52,11 @@ export default {
     uncleared_transactions: function() {
       return this.account.transactions.uncleared || []
     },
+  },
+  methods: {
+    pluralize(msg, count) {
+      return count > 1 ? msg + 's' : msg
+    }
   },
 }
 </script>

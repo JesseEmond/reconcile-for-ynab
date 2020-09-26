@@ -1,4 +1,3 @@
-// TODO when should we store a last_knowledge of server?
 const ynab_api = require("ynab");
 
 // YNAB handles some special transactions uniquely (e.g. Starting Balance).
@@ -39,7 +38,7 @@ async function create_reconciliation_transaction(ynab, account, amount) {
     "payee_name": "YNAB Reconcile: Adjustment",
     "memo": "Entered automatically by YNAB Reconcile",
   }
-  ynab.transactions.createTransaction("last-used", {transaction})
+  await ynab.transactions.createTransaction("last-used", {transaction})
 }
 
 async function reconcile(ynab, account, transactions, reconciliation_amount) {
@@ -47,7 +46,6 @@ async function reconcile(ynab, account, transactions, reconciliation_amount) {
   // TODO: default budget?
   if (reconciliation_amount != 0) {
     await create_reconciliation_transaction(ynab, account, reconciliation_amount)
-    // TODO: updates the account post-reload?
   }
   if (transactions.length) {
     transactions.forEach(txn => txn.cleared = "reconciled")
