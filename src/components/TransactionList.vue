@@ -32,6 +32,12 @@ export default {
     selected: [],
    }
   },
+  watch: {
+    selected: function(value) {
+      this.$emit('selected', value)
+    },
+    immediate: true,
+  },
   mounted() {
     // TODO: add support for uncleared transactions
     this.transactions = [...this.cleared]

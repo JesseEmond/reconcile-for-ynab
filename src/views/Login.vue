@@ -14,6 +14,7 @@ export default {
     this.store.ynab = await auth.get_api()
     // TODO use local storage?
     console.log("LOGGED IN!") // TODO do proper oauth flow here
+    this.store.reload()
     this.$router.push('/')
   }
 }

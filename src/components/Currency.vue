@@ -2,14 +2,12 @@
   <span class="currency"
     :class="{positive: value >= 0, negative: value < 0}">
     <span v-if="!editable">{{formatted}}</span>
-    <md-field v-else class="currency-field">
+    <md-field v-else class="currency-field" :class="field_classes">
       <span class="md-prefix">$</span> <!--TODO: use configured currency symbol -->
-      <!--TODO: use configured options for v-currency -->
-      <md-input id="balance-input" class="currency-input"
-        ref="currency" v-model="text" v-autowidth="autowidth"
-        v-currency="currency_options"/>
-      <md-button v-if="clearable" class="md-icon-button md-dense"
-        @click="onClear">
+      <auto-width-input id="balance-input" class="currency-input"
+        v-model="text" :autowidth="autowidth" v-currency="currency_options"
+        @md-field-classes="field_classes = $event" />
+      <md-button v-if="clearable" class="md-icon-button md-dense" @click="onClear">
         <md-icon>clear</md-icon>
       </md-button>
     </md-field>
@@ -17,6 +15,7 @@
 </template>
 
 <script>
+import AutoWidthInput from './AutoWidthInput'
 import { parse } from "vue-currency-input";
 const ynab = require("ynab")
 
@@ -28,16 +27,18 @@ function from_milliunits(milliunits) {
 export default {
   name: 'Currency',
   props: {
-    value: Number,  // in milliunits
+    initialValue: Number,  // in milliunits
 
     // Specific to editable currency:
     editable: { type: Boolean, default: false },
     autowidth: Object,
-    clearable: { type: Boolean, default: true },
+    clearable: { type: Boolean, default: false },
   },
+  components: { AutoWidthInput },
   data() {
     return {
-      text: '',
+      rawText: '',
+      // TODO: use configured ynab options for v-currency
       currency_options: {
         currency: null,
         locale: 'en',
@@ -45,26 +46,34 @@ export default {
         allowNegative: true,
         autoDecimalMode: true,
       },
+      field_classes: [],
     }
   },
   watch: {
-    value: {
+    initialValue: {
       handler(val) {
         this.text = from_milliunits(val).toString()
       },
       immediate: true,
     },
-    text: {
-      handler(text) {
-        const currency = parse(text, this.currency_options)
-        const milliunits = currency * 1000
-        this.$emit('input', milliunits)
-      },
-    }
   },
   computed: {
+    text: {
+      get() {
+        return this.rawText
+      },
+      set(text) {
+        this.rawText = text
+        const currency = parse(text, this.currency_options)
+        const milliunits = currency * 1000
+        this.$emit('update:value', milliunits)
+      },
+    },
+    value() {
+      return parse(this.text, this.currency_options)
+    },
     formatted() {
-      const currency = from_milliunits(this.value)
+      const currency = from_milliunits(this.initialValue)
       // TODO: follow preferences in YNAB account
       const fmt = new Intl.NumberFormat("en-US",
         { style: "currency", currency: "USD" })
@@ -73,10 +82,9 @@ export default {
   },
   methods: {
     onClear() {
-      // TODO: this doesn't handle the auto-width properly... Fix.
       this.$emit('reset')
-    }
-  }
+    },
+  },
 }
 </script>
 
@@ -98,6 +106,9 @@ $negative-color: red;
   #balance-input {
     -webkit-text-fill-color: $negative-color;
   }
+}
+#balance-input {
+  padding-right: 5px;
 }
 .md-icon-button {
   margin: 0;

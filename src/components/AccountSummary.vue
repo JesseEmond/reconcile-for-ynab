@@ -25,7 +25,7 @@
     </div>
 
     <div class="balance md-list-item-text">
-      <currency :value="balance" />
+      <currency :initial-value="balance" />
     </div>
     <md-icon>chevron_right</md-icon>
   </div>

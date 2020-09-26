@@ -25,9 +25,6 @@
 <script>
 import AccountList from "../components/AccountList"
 
-import accounts from "../api/accounts"
-import transactions from "../api/transactions"
-
 export default {
   name: 'Home',
   props: {
@@ -36,49 +33,26 @@ export default {
   components: {
     AccountList
   },
-  data() {
-    return {
-      loaded: false,
-      error: "",
-    }
-  },
   computed: {
-    budget_accounts: function() {
+    loaded() {
+      return this.store.state.accounts_loaded
+    },
+    error() {
+      return this.store.state.error
+    },
+    budget_accounts() {
       return this.store.state.accounts.budget
     },
-    tracking_accounts: function() {
+    tracking_accounts() {
       return this.store.state.accounts.tracking
     },
   },
-  mounted() {
-    this.fetchAccounts()
-  },
   methods: {
-    fetchAccounts: async function() {
-      try {
-        const {budget, tracking} = await accounts.get_open_accounts_by_type(this.store.ynab)
-        this.store.state.accounts.budget = budget
-        this.store.state.accounts.tracking = tracking
-        budget.forEach(this.fetchTransactions)
-        tracking.forEach(this.fetchTransactions)
-        this.loaded = true;
-      } catch(err) {
-        this.error = err.message
-        console.log("Error details: ", err)
-      }
-    },
-    fetchTransactions: async function(account) {
-      const {cleared, uncleared} = await transactions.get_account_transactions_by_type(
-        this.store.ynab, account.id)
-      account.transactions = { cleared, uncleared }
-    },
     goToAccount: function(account) {
       this.$router.push({ name: "Account", params: { id: account.id }})
     },
     retryOnError: function() {
-      this.loaded = false
-      this.error = ''
-      this.fetchAccounts()
+      this.store.reload()
     }
   },
 }
