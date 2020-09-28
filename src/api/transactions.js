@@ -1,22 +1,10 @@
+// TODO: do diffs via server last knowledge
 const ynab_api = require("ynab");
-
-// YNAB handles some special transactions uniquely (e.g. Starting Balance).
-// It is valid to reconcile some of them in the reconciliation app, so rename
-// them so that they are not considered special. 
-function rename_if_special(transaction) {
-  // It is valid to reconcile a starting balance transaction through the app.
-  if (transaction.payee_name.startsWith("Starting Balance")) {
-    // Note: it looks like YNAB won't actually change the payee name here,
-    // so it doesn't matter that try to change it.
-    transaction.payee_name = "Starting YNAB Balance"
-  }
-}
 
 async function get_account_transactions(ynab, account_id) {
   // TODO: error handling?
-  // TODO: default budget?
   const transactionsResponse = await ynab.transactions.getTransactionsByAccount(
-    "last-used", account_id)
+    "default", account_id)
   return transactionsResponse.data.transactions
 }
 
@@ -31,27 +19,26 @@ async function create_reconciliation_transaction(ynab, account, amount) {
   // TODO: set category ID here based on the one extracted with name "Inflows"
   // TODO: error handling
   const transaction = {
-    "account_id": account.id,
-    "date": ynab_api.utils.getCurrentDateInISOFormat(),
-    "cleared": "reconciled",
-    "amount": amount,
-    "payee_name": "YNAB Reconcile: Adjustment",
-    "memo": "Entered automatically by YNAB Reconcile",
+    account_id: account.id,
+    date: ynab_api.utils.getCurrentDateInISOFormat(),
+    cleared: "reconciled",
+    amount: amount,
+    payee_name: "YNAB Reconcile: Adjustment",
+    memo: "Entered automatically by YNAB Reconcile",
   }
-  await ynab.transactions.createTransaction("last-used", {transaction})
+  await ynab.transactions.createTransaction("default", {transaction})
 }
 
 async function reconcile(ynab, account, transactions, reconciliation_amount) {
   // TODO: error handling?
-  // TODO: default budget?
   if (reconciliation_amount != 0) {
     await create_reconciliation_transaction(ynab, account, reconciliation_amount)
   }
   if (transactions.length) {
-    transactions.forEach(txn => txn.cleared = "reconciled")
-    transactions.forEach(rename_if_special)
+    const edited = transactions.map(txn => ({id: txn.id, cleared: "reconciled"}))
     try {
-      await ynab.transactions.updateTransactions("last-used", {transactions})
+      await ynab.transactions.updateTransactions("default",
+        {transactions: edited})
     } catch(err) {
         const detail = err.error.detail
         throw Error(`Error while reconciling on YNAB: ${detail}`)

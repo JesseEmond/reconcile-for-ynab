@@ -11,9 +11,8 @@ async function get_open_accounts(ynab) {
 }
 
 async function get_accounts(ynab) {
-  // TODO: default budget?
   try {
-    const response = await ynab.accounts.getAccounts("last-used")
+    const response = await ynab.accounts.getAccounts("default")
     const accounts = response.data.accounts
     accounts.forEach(acc => acc.transactions = false)
     if (process.env.VUE_APP_FAKE_BALANCE_AMOUNTS) {

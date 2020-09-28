@@ -18,7 +18,7 @@
     </md-table>
     <md-empty-state v-else
       class="md-primary" md-icon="done" md-label="No transactions to reconcile"
-      md-description="New transactions you add in YNAB will show up here.">
+      md-description="New transactions you add in YNAB can be reconciled with ease here.">
     </md-empty-state>
   </div>
 </template>
@@ -46,6 +46,7 @@ export default {
     immediate: true,
   },
   created() {
+    // TODO: list isn't taking right amount of width space
     // TODO: add support for uncleared transactions
     this.transactions = [...this.cleared]
     this.selected = [...this.cleared]

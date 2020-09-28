@@ -39,12 +39,15 @@
       <md-button class="md-raised md-primary" @click="reconcile"
         :disabled="!needs_reconciliation">
         Reconcile
+        <!-- TODO: test that out -->
+        <md-tooltip :md-active="!needs_reconciliation">Nothing to reconcile.</md-tooltip>
       </md-button>
     </div>
   </div>
 </template>
 
 <script>
+// TODO: hitting refresh from here doesn't load currency with right amount.
 import Currency from '../components/Currency'
 import TransactionList from '../components/TransactionList'
 
@@ -149,7 +152,7 @@ export default {
   align-items: center;
 }
 .transactions-list {
-  height: 45vh;
+  height: 40vh;
   width: 95%;
 }
 .actions-area {

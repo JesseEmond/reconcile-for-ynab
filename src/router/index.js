@@ -5,11 +5,12 @@ import Login from '../views/Login.vue'
 import Account from '../views/Account.vue'
 
 import store from '../store'
+import auth from '../api/auth'
 
 Vue.use(VueRouter)
 
 function ifNotAuthenticated(to, from, next) {
-  if (!store.ynab) {
+  if (!store.logged_in()) {
     next()
   } else {
     next('/')
@@ -17,10 +18,21 @@ function ifNotAuthenticated(to, from, next) {
 }
 
 function ifAuthenticated(to, from, next) {
-  if (store.ynab) {
+  if (store.logged_in()) {
+    store.maybe_first_load()
     next()
   } else {
     next('/login')
+  }
+}
+
+function checkOAuthCallback(to, from, next) {
+  const token = auth.try_parse_token(to.path)
+  if (token) {
+    store.login(token)
+    next('/')
+  } else {
+    next()
   }
 }
 
@@ -49,5 +61,7 @@ const routes = [
 const router = new VueRouter({
   routes
 })
+
+router.beforeEach(checkOAuthCallback)
 
 export default router

@@ -1,25 +1,30 @@
-const ynab = require("ynab");
+// TODO: check JS naming conventions and apply everywhere...
 
-async function get_access_token() {
-  return dev_login() ?? oauth_login();
-}
-
-function oauth_login() {
-  // TODO: use proper OAuth flow on https://api.youneedabudget.com/#outh-applications
-  throw Error("OAuth not implemented yet. Use the dev flow.");
-}
-
-function dev_login() {
-  const access_token = process.env.VUE_APP_YNAB_PERSONAL_ACCESS_TOKEN_KEEP_PRIVATE
-  if (access_token) {
-    console.log("Using dev personal access token.")
+function oauth_path() {
+  const client_id = process.env.VUE_APP_YNAB_OAUTH_CLIENT_ID
+  if (!client_id) {
+    throw Error("Client ID not configured. Make sure to include an " +
+      "env variable with name VUE_APP_YNAB_OAUTH_CLIENT_ID based on your YNAB " +
+      "OAuth configuration.")
   }
-  return access_token
+  const redirect_uri = process.env.VUE_APP_YNAB_OAUTH_REDIRECT_URI
+  if (!redirect_uri) {
+    throw Error("Redirect URI not configured. Make sure to include an " +
+      "env variable with name VUE_APP_YNAB_OAUTH_REDIRECT_URI.")
+  }
+  return 'https://app.youneedabudget.com/oauth/authorize?' +
+    `client_id=${client_id}&redirect_uri=${redirect_uri}&` +
+    'response_type=token'
 }
 
-export default {
-  get_api: async function() {
-    const access_token = await get_access_token();
-    return new ynab.API(access_token);
+function try_parse_token(path) {
+  const regex = /access_token=([0-9a-zA-Z]+)/
+  const match = regex.exec(path)
+  if (match) {
+    const token = match[1]
+    return token
   }
+  return false
 }
+
+export default { oauth_path, try_parse_token }

@@ -15,9 +15,7 @@
           unreconciled {{pluralize('transaction', cleared_transactions.length)}}
         </span>
         <span v-else-if="uncleared_transactions.length">
-          <span class="transaction-count">
-            <md-badge class="md-primary md-square" :md-content="uncleared_transactions.length"/>
-          </span>
+          {{uncleared_transactions.length}}
           uncleared {{pluralize('transaction', uncleared_transactions.length)}}
         </span>
         <span v-else class="reconciled-state">Reconciled</span>

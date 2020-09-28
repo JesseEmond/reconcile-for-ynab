@@ -1,5 +1,28 @@
+const ynab_api = require("ynab");
+
 import accounts_api from "./api/accounts"
 import transactions_api from "./api/transactions"
+
+function setWithExpiry(key, value, ttl_ms) {
+  const now = new Date()
+  const item = {
+    value,
+    expiry: now.getTime() + ttl_ms,
+  }
+  localStorage.setItem(key, JSON.stringify(item))
+}
+
+function getWithExpiry(key) {
+  const itemStr = localStorage.getItem(key)
+  if (!itemStr) return null
+  const item = JSON.parse(itemStr)
+  const now = new Date()
+  if (now.getTime() > item.expiry) {
+    localStorage.removeItem(key)
+    return null
+  }
+  return item.value
+}
 
 async function fetchAccounts(ynab, state) {
   const {budget, tracking} = await accounts_api.get_open_accounts_by_type(ynab)
@@ -26,6 +49,21 @@ export default {
     accounts_loaded: false,
     reconciling: false,
     error: '',
+  },
+  logged_in: function() {
+    return getWithExpiry("access_token") != null
+  },
+  maybe_first_load() {
+    if (!this.ynab) {
+      const access_token = getWithExpiry("access_token")
+      this.ynab = new ynab_api.API(access_token)
+      this.reload()
+    }
+  },
+  login: function(access_token) {
+    // Expires in 2h, based on YNAB documentation.
+    const ttl_2h_ms = 2 * 60 * 60 * 1000
+    setWithExpiry("access_token", access_token, ttl_2h_ms)
   },
   reload: async function() {
     this.state.accounts_loaded = false
