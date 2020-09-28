@@ -3,7 +3,7 @@
     <div class="header">
       <md-icon class="md-size-5x md-primary">account_balance</md-icon>
       <p class="md-title md-primary">Reconcile your accounts</p>
-      <md-button class="md-raised md-primary" :href="oauth_url">Connect to YNAB</md-button>
+      <md-button class="md-raised md-primary" :href="oauthUrl">Connect to YNAB</md-button>
     </div>
     <div class="details">
       <p class="md-subheading">
@@ -27,7 +27,7 @@ export default {
     store: Object
   },
   computed: {
-    oauth_url() {
+    oauthUrl() {
       return auth.oauth_path()
     },
   },

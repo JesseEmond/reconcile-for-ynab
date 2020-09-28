@@ -2,22 +2,22 @@
   <div class="container">
     <p class="md-title">{{account.name}}</p>
     <currency id="balance" class="balance" ref="balance" editable
-      :initial-value="initial_balance" @update:value="current_balance = $event"
+      :initial-value="initialBalance" @update:value="currentBalance = $event"
       :autowidth="{maxWidth: '100%', minWidth: '100px', comfortZone: 25}"
-      :clearable="current_balance != server_balance">
+      :clearable="currentBalance != serverBalance">
     </currency>
-    <div :style="{visibility: reconciliation_transaction != 0 ? 'visible' : 'hidden'}">
+    <div :style="{visibility: reconciliationTransaction != 0 ? 'visible' : 'hidden'}">
       <md-icon class="md-accent">info</md-icon>
       <span class="md-subheading">
         A reconciliation transaction of 
-        <currency :initialValue="reconciliation_transaction"></currency>
+        <currency :initialValue="reconciliationTransaction"></currency>
         will be created.
       </span>
     </div>
     <div class="transactions">
       <transaction-list v-if="transactions && !submitting" class="transactions-list md-elevation-4"
         :cleared="transactions.cleared" :uncleared="transactions.uncleared"
-        @selected="selected_transactions = $event">
+        @selected="selectedTransactions = $event">
       </transaction-list>
       <!-- TODO: loading during reconciliation -->
       <!-- TODO: show error on failed transaction creation -->
@@ -25,23 +25,24 @@
       <p class="md-subheading" v-else>
         Loading transactions...
       </p>
-      <p :style="{visibility: selected_transactions.length ? 'visible' : 'hidden'}">
+      <p :style="{visibility: selectedTransactions.length ? 'visible' : 'hidden'}">
         <md-icon class="md-accent">info</md-icon>
         <span class="md-subheading">
-          {{selected_transactions.length}}
-          {{pluralize('transaction', selected_transactions.length)}}
+          {{selectedTransactions.length}}
+          {{pluralize('transaction', selectedTransactions.length)}}
           will be marked as reconciled.
         </span>
       </p>
     </div>
     <div class="actions-area">
       <md-button to="/">Cancel</md-button>
-      <md-button class="md-raised md-primary" @click="reconcile"
-        :disabled="!needs_reconciliation">
-        Reconcile
-        <!-- TODO: test that out -->
-        <md-tooltip :md-active="!needs_reconciliation">Nothing to reconcile.</md-tooltip>
-      </md-button>
+      <span>
+        <md-button class="md-raised md-primary" @click="reconcile"
+          :disabled="!needsReconciliation">
+          Reconcile
+        </md-button>
+        <md-tooltip>{{reconcileTooltip}}</md-tooltip>
+      </span>
     </div>
   </div>
 </template>
@@ -59,43 +60,50 @@ export default {
   },
   data() {
     return {
-      initial_balance: null,
-      current_balance: null,
-      selected_transactions: [],
+      initialBalance: null,
+      currentBalance: null,
+      selectedTransactions: [],
     }
   },
   computed: {
     account() {
       const {budget, tracking} = this.store.state.accounts
-      const budget_account = budget.find(acc => acc.id == this.id)
-      return budget_account ?? tracking.find(acc => acc.id == this.id)
+      const budgetAccount = budget.find(acc => acc.id == this.id)
+      return budgetAccount ?? tracking.find(acc => acc.id == this.id)
     },
     transactions() {
       return this.account.transactions
     },
     submitting() {
-      return this.store.state.reconiling
+      return this.store.state.reconciling
     },
-    needs_reconciliation() {
-      return this.selected_transactions.length > 0 || this.reconciliation_transaction != 0
+    needsReconciliation() {
+      return this.selectedTransactions.length > 0 || this.reconciliationTransaction != 0
     },
-    server_balance() {
+    serverBalance() {
       return this.account.cleared_balance
     },
-    reconciliation_transaction() {
-      return this.current_balance - this.server_balance 
+    reconciliationTransaction() {
+      return this.currentBalance - this.serverBalance 
+    },
+    reconcileTooltip() {
+      if (this.needsReconciliation) {
+        return "Reconcile on YNAB."
+      } else {
+        return "Nothing to reconcile."
+      }
     },
   },
   components: { Currency, TransactionList },
   created() {
     // TODO: on load, refresh this account's info from API?
-    this.initial_balance = this.server_balance
-    this.current_balance = this.initial_balance
+    this.initialBalance = this.serverBalance
+    this.currentBalance = this.initialBalance
   },
   methods: {
     reconcile: async function() {
       await this.store.reconcile(this.account,
-        this.selected_transactions, this.reconciliation_transaction)
+        this.selectedTransactions, this.reconciliationTransaction)
       if (!this.store.state.error) {
         this.$router.push('/')
       }

@@ -1,9 +1,9 @@
 <template>
   <div class="container">
     <div v-if="loaded">
-      <account-list :accounts="budget_accounts" subheader-content="Budget Accounts"
+      <account-list :accounts="budgetAccounts" subheader-content="Budget Accounts"
         no-accounts-content="No budget accounts." :on-select="goToAccount" />
-      <account-list :accounts="tracking_accounts" subheader-content="Tracking Accounts"
+      <account-list :accounts="trackingAccounts" subheader-content="Tracking Accounts"
         no-accounts-content="No tracking accounts." :on-select="goToAccount" />
     </div>
     <div class="loader-container" v-else-if="!error.length">
@@ -35,23 +35,23 @@ export default {
   },
   computed: {
     loaded() {
-      return this.store.state.accounts_loaded
+      return this.store.state.accountsLoaded
     },
     error() {
       return this.store.state.error
     },
-    budget_accounts() {
+    budgetAccounts() {
       return this.store.state.accounts.budget
     },
-    tracking_accounts() {
+    trackingAccounts() {
       return this.store.state.accounts.tracking
     },
   },
   methods: {
-    goToAccount: function(account) {
+    goToAccount(account) {
       this.$router.push({ name: "Account", params: { id: account.id }})
     },
-    retryOnError: function() {
+    retryOnError() {
       this.store.reload()
     }
   },

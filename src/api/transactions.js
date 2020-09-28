@@ -1,26 +1,26 @@
 // TODO: do diffs via server last knowledge
-const ynab_api = require("ynab");
+const ynabApi = require("ynab");
 
-async function get_account_transactions(ynab, account_id) {
+async function getAccountTransactions(ynab, accountId) {
   // TODO: error handling?
   const transactionsResponse = await ynab.transactions.getTransactionsByAccount(
-    "default", account_id)
+    "default", accountId)
   return transactionsResponse.data.transactions
 }
 
-async function get_account_transactions_by_type(ynab, account_id) {
-  const transactions = await get_account_transactions(ynab, account_id)
+async function getAccountTransactionsByType(ynab, account_id) {
+  const transactions = await getAccountTransactions(ynab, account_id)
   const cleared = transactions.filter(txn => txn.cleared == "cleared")
   const uncleared = transactions.filter(txn => txn.cleared == "uncleared")
   return { cleared, uncleared }
 }
 
-async function create_reconciliation_transaction(ynab, account, amount) {
+async function createReconciliationTransaction(ynab, account, amount) {
   // TODO: set category ID here based on the one extracted with name "Inflows"
   // TODO: error handling
   const transaction = {
     account_id: account.id,
-    date: ynab_api.utils.getCurrentDateInISOFormat(),
+    date: ynabApi.utils.getCurrentDateInISOFormat(),
     cleared: "reconciled",
     amount: amount,
     payee_name: "YNAB Reconcile: Adjustment",
@@ -29,10 +29,10 @@ async function create_reconciliation_transaction(ynab, account, amount) {
   await ynab.transactions.createTransaction("default", {transaction})
 }
 
-async function reconcile(ynab, account, transactions, reconciliation_amount) {
+async function reconcile(ynab, account, transactions, reconciliationAmount) {
   // TODO: error handling?
-  if (reconciliation_amount != 0) {
-    await create_reconciliation_transaction(ynab, account, reconciliation_amount)
+  if (reconciliationAmount != 0) {
+    await createReconciliationTransaction(ynab, account, reconciliationAmount)
   }
   if (transactions.length) {
     const edited = transactions.map(txn => ({id: txn.id, cleared: "reconciled"}))
@@ -46,4 +46,4 @@ async function reconcile(ynab, account, transactions, reconciliation_amount) {
   }
 }
 
-export default { get_account_transactions_by_type, reconcile }
+export default { getAccountTransactionsByType, reconcile }

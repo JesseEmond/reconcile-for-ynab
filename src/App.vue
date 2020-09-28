@@ -17,7 +17,7 @@
 <script>
 import store from './store'
 export default {
-  data: function() {
+  data() {
     return {
       store: store
     };

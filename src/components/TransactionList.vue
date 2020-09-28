@@ -40,7 +40,7 @@ export default {
    }
   },
   watch: {
-    selected: function(value) {
+    selected(value) {
       this.$emit('selected', value)
     },
     immediate: true,

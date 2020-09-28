@@ -8,15 +8,15 @@
         <span v-if="!account.transactions">
           Loading...
         </span>
-        <span v-else-if="cleared_transactions.length">
+        <span v-else-if="clearedTransactions.length">
           <span class="transaction-count">
-            <md-badge class="md-primary md-square" :md-content="cleared_transactions.length"/>
+            <md-badge class="md-primary md-square" :md-content="clearedTransactions.length"/>
           </span>
-          unreconciled {{pluralize('transaction', cleared_transactions.length)}}
+          unreconciled {{pluralize('transaction', clearedTransactions.length)}}
         </span>
-        <span v-else-if="uncleared_transactions.length">
-          {{uncleared_transactions.length}}
-          uncleared {{pluralize('transaction', uncleared_transactions.length)}}
+        <span v-else-if="unclearedTransactions.length">
+          {{unclearedTransactions.length}}
+          uncleared {{pluralize('transaction', unclearedTransactions.length)}}
         </span>
         <span v-else class="reconciled-state">Reconciled</span>
       </div>
@@ -41,13 +41,13 @@ export default {
     Currency,
   },
   computed: {
-    balance: function() {
+    balance() {
       return this.account.cleared_balance
     },
-    cleared_transactions: function() {
+    clearedTransactions() {
       return this.account.transactions.cleared || []
     },
-    uncleared_transactions: function() {
+    unclearedTransactions() {
       return this.account.transactions.uncleared || []
     },
   },

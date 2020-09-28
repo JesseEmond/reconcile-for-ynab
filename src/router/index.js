@@ -10,7 +10,7 @@ import auth from '../api/auth'
 Vue.use(VueRouter)
 
 function ifNotAuthenticated(to, from, next) {
-  if (!store.logged_in()) {
+  if (!store.isLoggedIn()) {
     next()
   } else {
     next('/')
@@ -18,8 +18,8 @@ function ifNotAuthenticated(to, from, next) {
 }
 
 function ifAuthenticated(to, from, next) {
-  if (store.logged_in()) {
-    store.maybe_first_load()
+  if (store.isLoggedIn()) {
+    store.maybeFirstLoad()
     next()
   } else {
     next('/login')
@@ -27,7 +27,7 @@ function ifAuthenticated(to, from, next) {
 }
 
 function checkOAuthCallback(to, from, next) {
-  const token = auth.try_parse_token(to.path)
+  const token = auth.tryParseToken(to.path)
   if (token) {
     store.login(token)
     next('/')

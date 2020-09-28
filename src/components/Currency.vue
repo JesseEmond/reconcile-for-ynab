@@ -2,11 +2,11 @@
   <span class="currency"
     :class="{positive: value >= 0, negative: value < 0}">
     <span v-if="!editable">{{formatValue(initialValue, true)}}</span>
-    <md-field v-else class="currency-field" :class="field_classes">
+    <md-field v-else class="currency-field" :class="fieldClasses">
       <span class="md-prefix">$</span> <!--TODO: use configured currency symbol -->
       <auto-width-input id="balance-input" class="currency-input"
-        v-model="text" :autowidth="autowidth" v-currency="currency_options"
-        @md-field-classes="field_classes = $event" />
+        v-model="text" :autowidth="autowidth" v-currency="currencyOptions"
+        @md-field-classes="fieldClasses = $event" />
       <md-button v-if="clearable" class="md-icon-button md-dense" @click="onClear">
         <md-icon>clear</md-icon>
       </md-button>
@@ -19,7 +19,7 @@ import AutoWidthInput from './AutoWidthInput'
 import { parse } from "vue-currency-input";
 const ynab = require("ynab")
 
-function from_milliunits(milliunits) {
+function fromMilliunits(milliunits) {
   return ynab.utils.convertMilliUnitsToCurrencyAmount(
     milliunits, /*currencyDecimalDigits=*/2)
 }
@@ -39,14 +39,14 @@ export default {
     return {
       rawText: '',
       // TODO: use configured ynab options for v-currency
-      currency_options: {
+      currencyOptions: {
         currency: null,
         locale: 'en',
         distractionFree: false,
         allowNegative: true,
         autoDecimalMode: true,
       },
-      field_classes: [],
+      fieldClasses: [],
     }
   },
   watch: {
@@ -64,18 +64,18 @@ export default {
       },
       set(text) {
         this.rawText = text
-        const currency = parse(text, this.currency_options)
+        const currency = parse(text, this.currencyOptions)
         const milliunits = currency * 1000
         this.$emit('update:value', milliunits)
       },
     },
     value() {
-      return parse(this.text, this.currency_options)
+      return parse(this.text, this.currencyOptions)
     },
   },
   methods: {
     formatValue(milliunits, showCurrency) {
-      const currency = from_milliunits(milliunits)
+      const currency = fromMilliunits(milliunits)
       let options = {};
       if (showCurrency) {
         // TODO: follow preferences in YNAB account

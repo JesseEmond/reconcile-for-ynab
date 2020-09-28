@@ -1,29 +1,21 @@
-async function get_open_accounts_by_type(ynab) {
-  const open_accounts = await get_open_accounts(ynab);
-  const budget = open_accounts.filter(acc => acc.on_budget);
-  const tracking = open_accounts.filter(acc => !acc.on_budget);
+async function getOpenAccountsByType(ynab) {
+  const accounts = await getOpenAccounts(ynab);
+  const budget = accounts.filter(acc => acc.on_budget);
+  const tracking = accounts.filter(acc => !acc.on_budget);
   return { budget, tracking };
 }
 
-async function get_open_accounts(ynab) {
-  const accounts = await get_accounts(ynab);
+async function getOpenAccounts(ynab) {
+  const accounts = await getAccounts(ynab);
   return accounts.filter(acc => !acc.closed);
 }
 
-async function get_accounts(ynab) {
+async function getAccounts(ynab) {
   try {
     const response = await ynab.accounts.getAccounts("default")
     const accounts = response.data.accounts
-    accounts.forEach(acc => acc.transactions = false)
-    if (process.env.VUE_APP_FAKE_BALANCE_AMOUNTS) {
-      console.log("Faking account balances!")
-      accounts.forEach(function(account) {
-        const randomBalance = Math.random() * 1000.0 - 300.0
-        const roundedBalance = Math.round(randomBalance * 100) / 100
-        const balanceMilliunits = roundedBalance * 1000.0
-        account.cleared_balance = balanceMilliunits
-      })
-    }
+    // Set 'null' transactions until they are loaded.
+    accounts.forEach(acc => acc.transactions = null)
     return accounts
   } catch (err) {
     const detail = err.error.detail
@@ -31,4 +23,4 @@ async function get_accounts(ynab) {
   }
 }
 
-export default { get_open_accounts_by_type }
+export default { getOpenAccountsByType }
