@@ -30,6 +30,7 @@
 </template>
 
 <script>
+// TODO: global error display here?
 // TODO: host on github pages
 // TODO: get app validated
 // TODO: appear on Community apps of YNAB

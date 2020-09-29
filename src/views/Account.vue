@@ -51,7 +51,6 @@
 </template>
 
 <script>
-// TODO: currency doesn't update on refresh
 import Currency from '../components/Currency'
 import TransactionList from '../components/TransactionList'
 
@@ -97,11 +96,17 @@ export default {
       }
     },
   },
-  components: { Currency, TransactionList },
-  created() {
-    this.initialBalance = this.serverBalance
-    this.currentBalance = this.initialBalance
+  watch: {
+    store: {
+      handler() {
+        this.initialBalance = this.serverBalance
+        this.currentBalance = this.initialBalance
+      },
+      deep: true,
+      immediate: true,
+    }
   },
+  components: { Currency, TransactionList },
   methods: {
     reconcile: async function() {
       await this.store.reconcile(this.account,
