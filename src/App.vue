@@ -34,6 +34,8 @@
 // TODO: host on github pages
 // TODO: get app validated
 // TODO: appear on Community apps of YNAB
+// TODO: PWA
+// TODO: install PWA button
 import store from './store'
 export default {
   data() {
