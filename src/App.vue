@@ -8,7 +8,7 @@
       </md-app-toolbar>
 
       <md-app-content class="md-layout">
-        <div class="md-layout-item md-size-25 md-small-size-0"></div>
+        <div class="md-layout-item md-size-25 md-small-hide"></div>
         <div class="md-layout-item md-size-50 md-small-size-100">
           <router-view :store="store"></router-view>
         </div>

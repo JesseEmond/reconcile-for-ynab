@@ -48,7 +48,7 @@
 </template>
 
 <script>
-// TODO: hitting refresh from here doesn't load currency with right amount.
+// TODO: once we stop blocking on data load, properly refresh once it's loaded
 import Currency from '../components/Currency'
 import TransactionList from '../components/TransactionList'
 

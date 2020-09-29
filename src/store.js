@@ -52,17 +52,17 @@ export default {
   isLoggedIn() {
     return getWithExpiry("access_token") != null
   },
-  maybeFirstLoad() {
+  maybeFirstLoad: async function() {
     if (!this.ynab) {
       const access_token = getWithExpiry("access_token")
       this.ynab = new ynabApi.API(access_token)
-      this.reload()
+      await this.reload()
     }
   },
   login(access_token) {
     // Expires in 2h, based on YNAB documentation.
-    const ttl_2h_ms = 2 * 60 * 60 * 1000
-    setWithExpiry("access_token", access_token, ttl_2h_ms)
+    const TTL_2H_MS = 2 * 60 * 60 * 1000
+    setWithExpiry("access_token", access_token, TTL_2H_MS)
   },
   reload: async function() {
     this.state.accountsLoaded = false
