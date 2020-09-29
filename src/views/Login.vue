@@ -12,13 +12,12 @@
     </div>
     <span>
       Made with <md-icon class="md-accent">favorite</md-icon>,
-      code on <a href="TODO github link" class="md-accent">GitHub</a>
+      code on <a href="https://github.com/JesseEmond/ynab-reconcile" class="md-accent">GitHub</a>
     </span>
   </div>
 </template>
 
 <script>
-// TODO: proper link to github
 import auth from '../api/auth'
 
 export default {
