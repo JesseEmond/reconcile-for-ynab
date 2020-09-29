@@ -7,5 +7,8 @@ module.exports = {
         path.resolve(__dirname, './src/imports.scss'),
       ]
     }
-  }
+  },
+  publicPath: process.env.NODE_ENV === 'production'
+    ? '/ynab-reconcile/'
+    : '/',
 }
