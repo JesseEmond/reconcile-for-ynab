@@ -24,6 +24,7 @@
 </template>
 
 <script>
+const ynabApi = require("ynab");
 import Currency from './Currency'
 
 export default {
@@ -46,14 +47,17 @@ export default {
     immediate: true,
   },
   created() {
-    // TODO: list isn't taking right amount of width space
     // TODO: add support for uncleared transactions
     this.transactions = [...this.cleared]
     this.selected = [...this.cleared]
   },
   methods: {
-    formatDate(date) {
-      return date // TODO: format
+    formatDate(dateStr) {
+      // TODO: use YNAB locale
+      const date = ynabApi.utils.convertFromISODateString(dateStr)
+      const options = { day: "numeric", month: "short" }
+      const format = new Intl.DateTimeFormat('en-US', options)
+      return format.format(date)
     },
   },
 }
@@ -65,6 +69,7 @@ export default {
     padding-left: 4px;
     padding-right: 4px;
   }
+  margin: 0;
 }
 </style>
 <style lang="scss" scoped>

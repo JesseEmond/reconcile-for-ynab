@@ -7,14 +7,20 @@
         <span class="md-title">YNAB Reconcile</span>
       </md-app-toolbar>
 
-      <md-app-content>
-        <router-view :store="store" />
+      <md-app-content class="md-layout">
+        <div class="md-layout-item md-size-25 md-small-size-0"></div>
+        <div class="md-layout-item md-size-50 md-small-size-100">
+          <router-view :store="store"></router-view>
+        </div>
       </md-app-content>
     </md-app>
   </div>
 </template>
 
 <script>
+// TODO: host on github pages
+// TODO: get app validated
+// TODO: appear on Community apps of YNAB
 import store from './store'
 export default {
   data() {

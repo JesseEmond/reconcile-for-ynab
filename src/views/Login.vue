@@ -28,7 +28,7 @@ export default {
   },
   computed: {
     oauthUrl() {
-      return auth.oauth_path()
+      return auth.oauthPath()
     },
   },
 }

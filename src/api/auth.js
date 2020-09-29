@@ -1,5 +1,3 @@
-// TODO: check JS naming conventions and apply everywhere...
-
 function oauthPath() {
   const clientId = process.env.VUE_APP_YNAB_OAUTH_CLIENT_ID
   if (!clientId) {
