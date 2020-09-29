@@ -18,7 +18,7 @@
     </md-table>
     <md-empty-state v-else
       class="md-primary" md-icon="done" md-label="No transactions to reconcile"
-      md-description="New transactions you add in YNAB can be reconciled with ease here.">
+      md-description="New transactions you add will show up here.">
     </md-empty-state>
   </div>
 </template>

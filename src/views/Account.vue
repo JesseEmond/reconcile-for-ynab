@@ -1,6 +1,6 @@
 <template>
   <div class="container">
-    <p class="md-title">{{account.name}}</p>
+    <p class="account-name md-title">{{account.name}}</p>
     <currency id="balance" class="balance" ref="balance" editable
       :initial-value="initialBalance" @update:value="currentBalance = $event"
       :autowidth="{maxWidth: '100%', minWidth: '100px', comfortZone: 25}"
@@ -15,16 +15,19 @@
       </span>
     </div>
     <div class="transactions">
-      <transaction-list v-if="transactions && !submitting" class="transactions-list md-elevation-4"
-        :cleared="transactions.cleared" :uncleared="transactions.uncleared"
-        @selected="selectedTransactions = $event">
-      </transaction-list>
-      <!-- TODO: loading during reconciliation -->
-      <!-- TODO: show error on failed transaction creation -->
-      <!-- TODO: show error on failed transaction update -->
-      <p class="md-subheading" v-else>
-        Loading transactions...
-      </p>
+      <div class="transactions-list">
+        <transaction-list v-if="transactions && !submitting" class="md-elevation-4"
+          :cleared="transactions.cleared" :uncleared="transactions.uncleared"
+          @selected="selectedTransactions = $event">
+        </transaction-list>
+        <!-- TODO: loading during reconciliation -->
+        <!-- TODO: show error on failed transaction creation -->
+        <!-- TODO: show error on failed transaction update -->
+        <div class="loader-container" v-else>
+          <span class="md-title">Loading transactions...</span>
+          <md-progress-spinner md-mode="indeterminate"></md-progress-spinner>
+        </div>
+      </div>
       <p :style="{visibility: selectedTransactions.length ? 'visible' : 'hidden'}">
         <md-icon class="md-accent">info</md-icon>
         <span class="md-subheading">
@@ -48,7 +51,7 @@
 </template>
 
 <script>
-// TODO: once we stop blocking on data load, properly refresh once it's loaded
+// TODO: currency doesn't update on refresh
 import Currency from '../components/Currency'
 import TransactionList from '../components/TransactionList'
 
@@ -96,7 +99,6 @@ export default {
   },
   components: { Currency, TransactionList },
   created() {
-    // TODO: on load, refresh this account's info from API?
     this.initialBalance = this.serverBalance
     this.currentBalance = this.initialBalance
   },
@@ -143,7 +145,7 @@ export default {
   align-items: center;
   justify-content: flex-start;
 }
-.md-title {
+.account-name {
   margin-top: 35px;
   font-size: 40px;
   margin-bottom: 5px;
@@ -169,5 +171,16 @@ export default {
   display: flex;
   justify-content: flex-end;
   width: 90%;
+}
+.loader-container {
+  flex-direction: column;
+  align-items: center;
+  display: flex;
+  height: 100%;
+  .md-title {
+    margin-top: 5vh;
+    font-size: 30px;
+    margin-bottom: 5vh;
+  }
 }
 </style>

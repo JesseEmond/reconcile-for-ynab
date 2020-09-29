@@ -64,6 +64,9 @@ export default {
     const TTL_2H_MS = 2 * 60 * 60 * 1000
     setWithExpiry("access_token", access_token, TTL_2H_MS)
   },
+  logout() {
+    localStorage.removeItem("access_token")
+  },
   reload: async function() {
     this.state.accountsLoaded = false
     try {

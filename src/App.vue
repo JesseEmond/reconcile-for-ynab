@@ -2,9 +2,21 @@
   <div class="page-container">
     <md-app md-mode="fixed" id="app">
       <md-app-toolbar class="md-primary">
-        <!-- TODO use icons? "back" button? -->
-        <!-- TODO: click title brings you to home -->
-        <span class="md-title">YNAB Reconcile</span>
+        <span class="md-title" @click="onHeaderClick">YNAB Reconcile</span>
+        <div v-if="store.isLoggedIn()"
+          class="md-toolbar-section-end">
+          <md-button @click="refresh" class="md-icon-button">
+            <md-icon>refresh</md-icon>
+          </md-button>
+          <md-menu md-size="small">
+            <md-button md-menu-trigger class="md-icon-button">
+              <md-icon>more_vert</md-icon>
+            </md-button>
+            <md-menu-content>
+              <md-menu-item @click="logout">Logout</md-menu-item>
+            </md-menu-content>
+          </md-menu>
+        </div>
       </md-app-toolbar>
 
       <md-app-content class="md-layout">
@@ -27,7 +39,19 @@ export default {
     return {
       store: store
     };
-  }
+  },
+  methods: {
+    onHeaderClick() {
+      this.$router.push('/')
+    },
+    logout() {
+      this.store.logout()
+      this.$router.push('/login')
+    },
+    refresh() {
+      this.store.reload()
+    },
+  },
 }
 </script>
 
@@ -49,6 +73,9 @@ export default {
   font-family: $text-font-family;
   min-height: 100vh;
 }
+</style>
+
+<style lang="scss" scoped>
 .md-app-content {
   display: flex;
   padding-left: 0;
