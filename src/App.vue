@@ -31,11 +31,11 @@
 
 <script>
 // TODO: global error display here?
-// TODO: host on github pages
 // TODO: get app validated
 // TODO: appear on Community apps of YNAB
 // TODO: PWA
-// TODO: install PWA button
+// TODO: "install PWA" button
+// TODO: test/fix app in half-height (split-screen)
 import store from './store'
 export default {
   data() {

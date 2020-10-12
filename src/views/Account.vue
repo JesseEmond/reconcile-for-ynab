@@ -15,11 +15,12 @@
       </span>
     </div>
     <div class="transactions">
-      <div class="transactions-list">
-        <transaction-list v-if="transactions && !submitting" class="md-elevation-4"
-          :cleared="transactions.cleared" :uncleared="transactions.uncleared"
-          @selected="selectedTransactions = $event">
-        </transaction-list>
+      <md-content class="transactions-list md-scrollbar md-elevation-4">
+        <div v-if="transactions && !submitting">
+          <transaction-list :cleared="transactions.cleared" :uncleared="transactions.uncleared"
+            @selected="selectedTransactions = $event">
+          </transaction-list>
+        </div>
         <!-- TODO: loading during reconciliation -->
         <!-- TODO: show error on failed transaction creation -->
         <!-- TODO: show error on failed transaction update -->
@@ -27,7 +28,7 @@
           <span class="md-title">Loading transactions...</span>
           <md-progress-spinner md-mode="indeterminate"></md-progress-spinner>
         </div>
-      </div>
+      </md-content>
       <p :style="{visibility: selectedTransactions.length ? 'visible' : 'hidden'}">
         <md-icon class="md-accent">info</md-icon>
         <span class="md-subheading">
@@ -169,6 +170,7 @@ export default {
 .transactions-list {
   height: 40vh;
   width: 95%;
+  overflow-y: auto;
 }
 .actions-area {
   align-items: flex-end;
