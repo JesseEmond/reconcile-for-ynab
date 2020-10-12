@@ -1,7 +1,7 @@
 <template>
   <div class="container">
     <div class="header">
-      <md-icon class="md-size-5x md-primary">account_balance</md-icon>
+      <img class="icon" src="img/icons/android-chrome-192x192.png">
       <p class="md-title md-primary">Reconcile your accounts</p>
       <md-button class="md-raised md-primary" :href="oauthUrl">Connect to YNAB</md-button>
     </div>
@@ -59,5 +59,10 @@ export default {
   min-height: 25%;
   max-width: 80%;
   text-align: center;
+}
+.icon {
+  width: 120px;
+  height: 120px;
+  margin: auto;
 }
 </style>
