@@ -36,6 +36,7 @@
 // TODO: PWA
 // TODO: "install PWA" button
 // TODO: test/fix app in half-height (split-screen)
+// TODO: replace app icon
 import store from './store'
 export default {
   data() {

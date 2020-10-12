@@ -15,7 +15,6 @@
 </template>
 
 <script>
-// TODO: "enter" loses focus (/closes the mobile keyboard)
 import AutoWidthInput from './AutoWidthInput'
 import { parse } from "vue-currency-input";
 const ynab = require("ynab")

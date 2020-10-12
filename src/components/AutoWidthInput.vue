@@ -6,7 +6,8 @@
 <template>
   <input class="md-input md-has-value" type="text"
     v-model="text" v-autowidth="autowidth"
-    @focus="focused = true" @blur="focused = false">
+    @focus="focused = true" @blur="focused = false"
+    v-on:keyup.enter="$event.target.blur()">
 </template>
 
 <script>
