@@ -31,6 +31,7 @@
 
 <script>
 // TODO: global error display here?
+// TODO: screenshots on the README.
 // TODO: get app validated
 // TODO: appear on Community apps of YNAB
 // TODO: PWA
