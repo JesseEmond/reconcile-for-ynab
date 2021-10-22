@@ -35,7 +35,6 @@
 // TODO: appear on Community apps of YNAB
 // TODO: PWA
 // TODO: "install PWA" button
-// TODO: test/fix app in half-height (split-screen)
 import store from './store'
 export default {
   data() {

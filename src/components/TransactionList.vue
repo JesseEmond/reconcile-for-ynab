@@ -77,6 +77,6 @@ export default {
   text-align: center;  
 }
 .md-empty-state {
-  height: 40vh;
+  height: 256px;
 }
 </style>
