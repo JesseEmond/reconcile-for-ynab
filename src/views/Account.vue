@@ -21,11 +21,18 @@
             @selected="selectedTransactions = $event">
           </transaction-list>
         </div>
-        <!-- TODO: loading during reconciliation -->
         <!-- TODO: show error on failed transaction creation -->
         <!-- TODO: show error on failed transaction update -->
-        <div class="loader-container" v-else>
+        
+        <!-- Loading transactions. -->
+        <div class="loader-container" v-else-if="!transactions">
           <span class="md-title">Loading transactions...</span>
+          <md-progress-spinner md-mode="indeterminate"></md-progress-spinner>
+        </div>
+
+        <!-- Reconciling... -->
+        <div class="loader-container" v-else>
+          <span class="md-title">Reconciling...</span>
           <md-progress-spinner md-mode="indeterminate"></md-progress-spinner>
         </div>
       </md-content>
