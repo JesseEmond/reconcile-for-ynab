@@ -5,6 +5,12 @@
 yarn install
 ```
 
+Create a `.env.local.` file with the following contents:
+```
+VUE_APP_YNAB_OAUTH_CLIENT_ID = '...'
+```
+Where `...` is your client ID, in your YNAB developer settings.
+
 ### Compiles and hot-reloads for development
 ```
 yarn serve
