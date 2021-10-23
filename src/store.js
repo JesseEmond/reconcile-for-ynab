@@ -45,6 +45,21 @@ async function fetchTransactions(ynab, account) {
   }
 }
 
+async function reloadAccount(ynab, state, accountId) {
+  let list = state.accounts.budget
+  let index = list.findIndex(acc => acc.id == accountId)
+  if (index < 0) {
+    list = state.accounts.tracking
+    index = list.findIndex(acc => acc.id == accountId)
+    if (index < 0) {
+      throw Error(`Account with ID ${accountId} not found.`)
+    }
+  }
+  const account = await accountsApi.getAccountById(ynab, accountId)
+  list.splice(index, 1, account)
+  await fetchTransactions(ynab, account)
+}
+
 export default {
   // API instance
   ynab: null,
@@ -83,7 +98,7 @@ export default {
     localStorage.removeItem("access_token")
   },
   reload: async function() {
-    var self = this;
+    let self = this;
     async function doReload() {
       self.state.accountsLoaded = false
       try {
@@ -97,7 +112,7 @@ export default {
     await doReload()
   },
   reconcile: async function(account, transactions, reconciliationAmount) {
-    var self = this;
+    let self = this;
     async function doReconcile() {
       self.state.reconciling = true
       try {
@@ -105,8 +120,11 @@ export default {
           transactions, reconciliationAmount)
         self.ok()
         self.state.reconciling = false
-        // TODO: only reload the account & its transactions
-        self.reload()
+        try {
+          await reloadAccount(self.ynab, self.state, account.id)
+        } catch(err) {
+          self.error(err)
+        }
       } catch(err) {
         self.error(err, doReconcile)
       }
