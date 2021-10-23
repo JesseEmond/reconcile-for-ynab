@@ -3,7 +3,7 @@
     <md-subheader>{{subheaderContent}}</md-subheader>
     <div v-for="account in accounts" :key="account.key">
       <md-list-item @click="onSelect(account)" :disabled="!!account.error">
-        <account-summary :account="account" />
+        <account-summary :account="account" :settings="settings" />
       </md-list-item>
       <md-divider></md-divider>
     </div>
@@ -23,6 +23,7 @@ export default {
     subheaderContent: String,
     noAccountsContent: String,
     onSelect: Function,
+    settings: Object,
   },
   components: {
     AccountSummary

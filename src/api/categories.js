@@ -7,7 +7,7 @@ async function getCategoryGroups(ynab) {
     const response = await ynab.categories.getCategories("default", cache.last_knowledge)
     cache.processDelta(response.data.category_groups, response.data.server_knowledge)
     return cache.items
-  } catch(err) {
+  } catch (err) {
     const detail = err.error.detail
     throw Error(`Error while fetching category groups from YNAB: ${detail}`)
   }

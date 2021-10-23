@@ -17,13 +17,20 @@ function ifNotAuthenticated(to, from, next) {
   }
 }
 
-async function ifAuthenticated(to, from, next) {
+async function ifAuthenticated(to, from, next, blocking) {
   if (store.isLoggedIn()) {
-    store.maybeFirstLoad()
+    const firstLoad = store.maybeFirstLoad()
+    if (blocking) {
+      await firstLoad
+    }
     next()
   } else {
     next('/login')
   }
+}
+
+async function ifAuthenticatedBlockingLoad(to, from, next) {
+  return ifAuthenticated(to, from, next, /*blocking=*/true)
 }
 
 function checkOAuthCallback(to, from, next) {
@@ -53,7 +60,7 @@ const routes = [
     path: '/account/:id',
     name: 'Account',
     component: Account,
-    beforeEnter: ifAuthenticated,
+    beforeEnter: ifAuthenticatedBlockingLoad,
     props: true,
   },
 ]

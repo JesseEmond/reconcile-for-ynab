@@ -1,33 +1,37 @@
 <template>
   <span class="currency"
     :class="{positive: value >= 0, negative: value < 0}">
-    <span v-if="!editable">{{formatValue(initialValue, true)}}</span>
+    <span v-if="!editable">{{formatValue(initialValue, /*showCurrency=*/true)}}</span>
     <md-field v-else class="currency-field" :class="fieldClasses">
-      <span class="md-prefix">$</span> <!--TODO: use configured currency symbol -->
+      <span class="md-prefix" v-if="showLeftCurrency">{{currencySymbol}}</span>
       <auto-width-input id="balance-input" class="currency-input"
         v-model="text" :autowidth="autowidth" v-currency="currencyOptions"
         @md-field-classes="fieldClasses = $event" />
       <md-button v-if="clearable" class="md-icon-button md-dense" @click="onClear">
         <md-icon>clear</md-icon>
       </md-button>
+      <span class="md-prefix" v-if="showRightCurrency">{{currencySymbol}}</span>
     </md-field>
   </span>
 </template>
 
 <script>
 import AutoWidthInput from './AutoWidthInput'
+import budgetsApi from "../api/budgets"
 import { parse } from "vue-currency-input";
 const ynab = require("ynab")
 
-function fromMilliunits(milliunits) {
+function fromMilliunits(milliunits, decimalDigits) {
   return ynab.utils.convertMilliUnitsToCurrencyAmount(
-    milliunits, /*currencyDecimalDigits=*/2)
+    milliunits, /*currencyDecimalDigits=*/decimalDigits)
 }
 
 export default {
   name: 'Currency',
   props: {
     initialValue: Number,  // in milliunits
+
+    settings: Object,  // From YNAB
 
     // Specific to editable currency:
     editable: { type: Boolean, default: false },
@@ -38,10 +42,10 @@ export default {
   data() {
     return {
       rawText: '',
-      // TODO: use configured ynab options for v-currency
       currencyOptions: {
-        currency: null,
-        locale: 'en',
+        currency: null,  // We display the currency symbol ourselves
+        precision: this.settings.currency_format.decimal_digits,
+        exportValueAsInteger: true,
         distractionFree: false,
         allowNegative: true,
         autoDecimalMode: true,
@@ -52,7 +56,7 @@ export default {
   watch: {
     initialValue: {
       handler(val) {
-        this.text = this.formatValue(val, false)
+        this.text = this.formatValue(val, /*showCurrency=*/false)
       },
       immediate: true,
     },
@@ -72,18 +76,28 @@ export default {
     value() {
       return parse(this.text, this.currencyOptions)
     },
+    showLeftCurrency() {
+      return this.settings.currency_format.display_symbol && this.settings.currency_format.symbol_first
+    },
+    showRightCurrency() {
+      return this.settings.currency_format.display_symbol && !this.settings.currency_format.symbol_first
+    },
+    currencySymbol() {
+      return this.settings.currency_format.currency_symbol
+    },
   },
   methods: {
     formatValue(milliunits, showCurrency) {
-      const currency = fromMilliunits(milliunits)
+      const iso_code = this.settings.currency_format.iso_code
+      const decimalDigits = this.settings.currency_format.decimal_digits
+      const currency = fromMilliunits(milliunits, decimalDigits)
       let options = {};
-      if (showCurrency) {
-        // TODO: follow preferences in YNAB account
-        options = { style: "currency", currency: "USD" }
+      if (showCurrency && this.settings.currency_format.display_symbol) {
+        options = { style: "currency", currency: iso_code, currencyDisplay: "narrowSymbol" }
       } else {
-        options = { style: "decimal", minimumFractionDigits: 2 }
+        options = { style: "decimal", minimumFractionDigits: decimalDigits }
       }
-      const fmt = new Intl.NumberFormat("en-US", options)
+      const fmt = new Intl.NumberFormat(budgetsApi.getLocale(this.settings), options)
       return fmt.format(currency)
     },
     onClear() {

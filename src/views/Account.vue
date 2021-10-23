@@ -4,13 +4,14 @@
     <currency id="balance" class="balance" ref="balance" editable
       :initial-value="initialBalance" @update:value="currentBalance = $event"
       :autowidth="{maxWidth: '100%', minWidth: '100px', comfortZone: 25}"
-      :clearable="currentBalance != serverBalance">
+      :clearable="currentBalance != serverBalance"
+      :settings="settings">
     </currency>
     <div :style="{visibility: reconciliationTransaction != 0 ? 'visible' : 'hidden'}">
       <md-icon class="md-accent">info</md-icon>
       <span class="md-subheading">
         A reconciliation transaction of 
-        <currency :initialValue="reconciliationTransaction"></currency>
+        <currency :initialValue="reconciliationTransaction" :settings="settings"></currency>
         will be created.
       </span>
     </div>
@@ -18,7 +19,7 @@
       <md-content class="transactions-list md-scrollbar md-elevation-4">
         <div v-if="transactions && !submitting">
           <transaction-list :cleared="transactions.cleared" :uncleared="transactions.uncleared"
-            @selected="selectedTransactions = $event">
+            @selected="selectedTransactions = $event" :settings="settings">
           </transaction-list>
         </div>
 
@@ -100,6 +101,9 @@ export default {
       } else {
         return "Nothing to reconcile."
       }
+    },
+    settings() {
+      return this.store.state.settings
     },
   },
   watch: {

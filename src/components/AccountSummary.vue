@@ -27,7 +27,7 @@
     </div>
 
     <div class="balance md-list-item-text">
-      <currency :initial-value="balance" />
+      <currency :initial-value="balance" :settings="settings" />
     </div>
     <md-icon>chevron_right</md-icon>
   </div>
@@ -40,6 +40,7 @@ export default {
   name: 'AccountSummary',
   props: {
     account: Object,
+    settings: Object,
   },
   components: {
     Currency,

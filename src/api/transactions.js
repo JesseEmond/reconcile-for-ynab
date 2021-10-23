@@ -41,7 +41,7 @@ async function tryGetInflowCategoryId(ynab) {
     const inflow = await categoriesApi.getInflowCategory(ynab)
     cachedInflowCategoryId = inflow.id
     return cachedInflowCategoryId
-  } catch(err) {
+  } catch (err) {
     console.log(`Failed to get inflow category ID. Will not set category on reconciliation. Error: ${err}`)
     return null
   }
@@ -81,7 +81,7 @@ async function reconcile(ynab, account, transactions, reconciliationAmount) {
     try {
       await ynab.transactions.updateTransactions("default",
         {transactions: edited})
-    } catch(err) {
+    } catch (err) {
       const detail = err.error.detail
       throw Error(`Error while reconciling transactions on YNAB: ${detail}`)
     }

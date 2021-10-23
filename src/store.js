@@ -1,6 +1,7 @@
 const ynabApi = require("ynab");
 
 import accountsApi from "./api/accounts"
+import budgetsApi from "./api/budgets"
 import transactionsApi from "./api/transactions"
 
 function setWithExpiry(key, value, ttl_ms) {
@@ -69,6 +70,7 @@ export default {
       budget: [],
       tracking: [],
     },
+    settings: null,
 
     // Loading states
     accountsLoaded: false,
@@ -86,6 +88,11 @@ export default {
     if (!this.ynab) {
       const access_token = getWithExpiry("access_token")
       this.ynab = new ynabApi.API(access_token)
+      await this.loadSettings()
+      if (this.state.error) {
+        this.ynab = null  // Couldn't load settings, don't consider a valid init.
+        return
+      }
       await this.reload()
     }
   },
@@ -97,6 +104,18 @@ export default {
   logout() {
     localStorage.removeItem("access_token")
   },
+  loadSettings: async function() {
+    let self = this;
+    async function doLoadSettings() {
+      try {
+        self.state.settings = await budgetsApi.getSettings(self.ynab)
+        self.ok()
+      } catch (err) {
+        self.error(err, doLoadSettings)
+      }
+    }
+    await doLoadSettings()
+  },
   reload: async function() {
     let self = this;
     async function doReload() {
@@ -105,7 +124,7 @@ export default {
         await fetchAccounts(self.ynab, self.state)
         self.state.accountsLoaded = true
         self.ok();
-      } catch(err) {
+      } catch (err) {
         self.error(err, doReload)
       }
     }
@@ -122,10 +141,10 @@ export default {
         self.state.reconciling = false
         try {
           await reloadAccount(self.ynab, self.state, account.id)
-        } catch(err) {
+        } catch (err) {
           self.error(err)
         }
-      } catch(err) {
+      } catch (err) {
         self.error(err, doReconcile)
       }
     }

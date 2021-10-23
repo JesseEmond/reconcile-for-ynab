@@ -2,9 +2,11 @@
   <div class="container">
     <div v-if="loaded">
       <account-list :accounts="budgetAccounts" subheader-content="Budget Accounts"
-        no-accounts-content="No budget accounts." :on-select="goToAccount" />
+        no-accounts-content="No budget accounts." :on-select="goToAccount"
+        :settings="settings" />
       <account-list :accounts="trackingAccounts" subheader-content="Tracking Accounts"
-        no-accounts-content="No tracking accounts." :on-select="goToAccount" />
+        no-accounts-content="No tracking accounts." :on-select="goToAccount"
+        :settings="settings" />
     </div>
     <div class="loader-container" v-else-if="!error.length">
       <span class="md-title">Loading accounts...</span>
@@ -40,6 +42,9 @@ export default {
     },
     trackingAccounts() {
       return this.store.state.accounts.tracking
+    },
+    settings() {
+      return this.store.state.settings
     },
   },
   methods: {

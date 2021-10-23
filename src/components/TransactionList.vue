@@ -12,7 +12,7 @@
         <md-table-cell md-label="Payee">{{ item.payee_name }}</md-table-cell>
         <md-table-cell md-label="Date">{{ formatDate(item.date) }}</md-table-cell>
         <md-table-cell md-label="Amount">
-          <currency :initialValue="item.amount"></currency>
+          <currency :initialValue="item.amount" :settings="settings"></currency>
         </md-table-cell>
       </md-table-row>
     </md-table>
@@ -25,6 +25,7 @@
 
 <script>
 const ynabApi = require("ynab");
+import budgetsApi from "../api/budgets"
 import Currency from './Currency'
 
 export default {
@@ -32,6 +33,7 @@ export default {
   props: {
     cleared: Array,
     uncleared: Array,
+    settings: Object,
   },
   components: { Currency },
   data() {
@@ -53,10 +55,11 @@ export default {
   },
   methods: {
     formatDate(dateStr) {
-      // TODO: use YNAB locale
       const date = ynabApi.utils.convertFromISODateString(dateStr)
       const options = { day: "numeric", month: "short" }
-      const format = new Intl.DateTimeFormat('en-US', options)
+      // Display based on locale instead of YNAB's configured date format, since we want
+      // very short dates liek "Oct 23" as opposed to full ones like "DD-MM-YYYY".
+      const format = new Intl.DateTimeFormat(budgetsApi.getLocale(this.settings), options)
       return format.format(date)
     },
   },
