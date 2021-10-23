@@ -1,11 +1,18 @@
-// TODO: do diffs via server last knowledge
 const ynabApi = require("ynab");
+const ynabCache = require("./ynab_cache");
+let cache = {}  // Cache, per account ID.
 
 async function getAccountTransactions(ynab, accountId) {
   try {
-    const transactionsResponse = await ynab.transactions.getTransactionsByAccount(
-      "default", accountId)
-    return transactionsResponse.data.transactions
+    if (!cache[accountId]) {
+      cache[accountId] = new ynabCache.YnabCache()
+    }
+    const response = await ynab.transactions.getTransactionsByAccount(
+      "default", accountId, /*since_date=*/undefined, /*type=*/undefined,
+      /*last_knowledge_of_server=*/cache[accountId].last_knowledge)
+    cache[accountId].processDelta(response.data.transactions,
+      response.data.server_knowledge)
+    return cache[accountId].items
   } catch (err) {
     const detail = err.error.detail
     throw Error(`Error while getting transactions for account, details: ${detail}`)
