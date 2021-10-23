@@ -1,5 +1,5 @@
-const ynabCache = require("./ynab_cache");
-let cache = new ynabCache.YnabCache()
+import { YnabCache } from "./ynab_cache"
+let cache = new YnabCache()
 
 function initAccount(account) {
   account.transactions = null  // set to null until they are loaded
