@@ -19,8 +19,7 @@ function ifNotAuthenticated(to, from, next) {
 
 async function ifAuthenticated(to, from, next) {
   if (store.isLoggedIn()) {
-    // TODO: don't wait for the data to load here...
-    await store.maybeFirstLoad()
+    store.maybeFirstLoad()
     next()
   } else {
     next('/login')
