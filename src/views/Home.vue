@@ -11,8 +11,6 @@
       <md-progress-spinner md-mode="indeterminate"></md-progress-spinner>
     </div>
     <div class="md-title loader-container" v-else>
-      <!-- TODO: only show this error when accounts fail loading. For per-transaction failures, show as 
-        account status error -->
       <div><md-icon class="md-size-4x md-accent">error</md-icon></div>
       Oops... Something went wrong.
     </div>
@@ -46,7 +44,9 @@ export default {
   },
   methods: {
     goToAccount(account) {
-      this.$router.push({ name: "Account", params: { id: account.id }})
+      if (!account.error) {
+        this.$router.push({ name: "Account", params: { id: account.id }})
+      }
     }
   },
 }

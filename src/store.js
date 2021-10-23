@@ -34,9 +34,15 @@ async function fetchAccounts(ynab, state) {
 }
 
 async function fetchTransactions(ynab, account) {
-  const {cleared, uncleared} = await transactionsApi.getAccountTransactionsByType(
-    ynab, account.id)
-  account.transactions = { cleared, uncleared }
+  try {
+    const {cleared, uncleared} = await transactionsApi.getAccountTransactionsByType(
+      ynab, account.id)
+    account.transactions = { cleared, uncleared }
+    account.error = ''
+  } catch (err) {
+    console.error(`Transactions loading failure for account ${account.id}. ${err.message}`)
+    account.error = `Failed to load transactions.`
+  }
 }
 
 export default {

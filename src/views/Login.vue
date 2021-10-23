@@ -7,7 +7,7 @@
     </div>
     <div class="details">
       <p class="md-subheading">
-        Quickly bring your accounts up-to-date, even on mobile. Your data stays on YNAB.
+        Quickly bring your accounts up-to-date, even on mobile. Your data stays between your browser and YNAB.
       </p>
     </div>
     <span>

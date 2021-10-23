@@ -16,6 +16,7 @@ async function getAccounts(ynab) {
     const accounts = response.data.accounts
     // Set 'null' transactions until they are loaded.
     accounts.forEach(acc => acc.transactions = null)
+    accounts.forEach(acc => acc.error = '')
     return accounts
   } catch (err) {
     const detail = err.error.detail

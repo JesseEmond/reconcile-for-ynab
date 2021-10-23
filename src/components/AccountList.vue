@@ -2,7 +2,7 @@
   <md-list class="accounts-list">
     <md-subheader>{{subheaderContent}}</md-subheader>
     <div v-for="account in accounts" :key="account.key">
-      <md-list-item @click="onSelect(account)">
+      <md-list-item @click="onSelect(account)" :disabled="!!account.error">
         <account-summary :account="account" />
       </md-list-item>
       <md-divider></md-divider>

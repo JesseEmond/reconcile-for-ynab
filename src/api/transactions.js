@@ -12,8 +12,8 @@ async function getAccountTransactions(ynab, accountId) {
   }
 }
 
-async function getAccountTransactionsByType(ynab, account_id) {
-  const transactions = await getAccountTransactions(ynab, account_id)
+async function getAccountTransactionsByType(ynab, accountId) {
+  const transactions = await getAccountTransactions(ynab, accountId)
   const cleared = transactions.filter(txn => txn.cleared == "cleared")
   const uncleared = transactions.filter(txn => txn.cleared == "uncleared")
   return { cleared, uncleared }

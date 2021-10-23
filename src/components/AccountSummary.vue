@@ -5,8 +5,12 @@
       <span>{{account.name}}</span>
 
       <div class="transactions-status">
-        <span v-if="!account.transactions">
+        <span v-if="!account.transactions && !account.error">
           Loading...
+        </span>
+        <span v-if="account.error" class="error-state">
+          <md-icon>error_outline</md-icon>
+          {{account.error}}
         </span>
         <span v-else-if="clearedTransactions.length">
           <span class="transaction-count">
@@ -83,6 +87,12 @@ export default {
 }
 .transaction-count {
   display: inline-flex;
+}
+.error-state {
+  color: #ff5252;
+  .md-icon-font {
+    color: #ff5252;
+  }
 }
 .reconciled-state {
   color: $color-disabled;
