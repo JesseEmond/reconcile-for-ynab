@@ -24,13 +24,19 @@
         <div class="md-layout-item md-size-50 md-small-size-100">
           <router-view :store="store"></router-view>
         </div>
+
+         <md-snackbar class="error"
+            :md-duration="Infinity" :md-active.sync="store.state.showError">
+            <span>Error encountered. {{store.state.error}}</span>
+            <md-button class="md-accent" v-if="store.state.errorRetryFn" @click="errorRetry">Retry</md-button>
+            <md-button class="md-accent" v-else @click="dismissError">Dismiss</md-button>
+          </md-snackbar>
       </md-app-content>
     </md-app>
   </div>
 </template>
 
 <script>
-// TODO: global error display here?
 // TODO: screenshots on the README.
 // TODO: get app validated
 // TODO: appear on Community apps of YNAB
@@ -51,6 +57,12 @@ export default {
     },
     refresh() {
       this.store.reload()
+    },
+    errorRetry() {
+      this.store.state.errorRetryFn()
+    },
+    dismissError() {
+      this.store.ok()
     },
   },
 }
@@ -81,5 +93,8 @@ export default {
   display: flex;
   padding-left: 0;
   padding-right: 0;
+}
+.error .md-button {
+  width: 150px;
 }
 </style>

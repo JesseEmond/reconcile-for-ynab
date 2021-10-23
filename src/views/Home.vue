@@ -11,14 +11,11 @@
       <md-progress-spinner md-mode="indeterminate"></md-progress-spinner>
     </div>
     <div class="md-title loader-container" v-else>
+      <!-- TODO: only show this error when accounts fail loading. For per-transaction failures, show as 
+        account status error -->
       <div><md-icon class="md-size-4x md-accent">error</md-icon></div>
       Oops... Something went wrong.
     </div>
-    <md-snackbar class="error"
-      :md-duration="Infinity" :md-active="error.length > 0" md-persistent>
-      <span>Error encountered: {{error}}</span>
-      <md-button class="md-primary" @click="retryOnError">Retry</md-button>
-    </md-snackbar>
   </div>
 </template>
 
@@ -34,11 +31,11 @@ export default {
     AccountList
   },
   computed: {
-    loaded() {
-      return this.store.state.accountsLoaded
-    },
     error() {
       return this.store.state.error
+    },
+    loaded() {
+      return this.store.state.accountsLoaded
     },
     budgetAccounts() {
       return this.store.state.accounts.budget
@@ -50,9 +47,6 @@ export default {
   methods: {
     goToAccount(account) {
       this.$router.push({ name: "Account", params: { id: account.id }})
-    },
-    retryOnError() {
-      this.store.reload()
     }
   },
 }

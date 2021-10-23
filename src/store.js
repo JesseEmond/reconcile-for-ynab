@@ -28,8 +28,9 @@ async function fetchAccounts(ynab, state) {
   const {budget, tracking} = await accountsApi.getOpenAccountsByType(ynab)
   state.accounts.budget = budget
   state.accounts.tracking = tracking
-  budget.forEach(acc => fetchTransactions(ynab, acc))
-  tracking.forEach(acc => fetchTransactions(ynab, acc))
+  const fetches = budget.map(acc => fetchTransactions(ynab, acc)).concat(
+    tracking.map(acc => fetchTransactions(ynab, acc)))
+  await Promise.all(fetches)
 }
 
 async function fetchTransactions(ynab, account) {
@@ -39,15 +40,23 @@ async function fetchTransactions(ynab, account) {
 }
 
 export default {
+  // API instance
   ynab: null,
+
   state: {
     accounts: {
       budget: [],
       tracking: [],
     },
+
+    // Loading states
     accountsLoaded: false,
     reconciling: false,
+
+    // Error management
     error: '',
+    errorRetryFn: null,
+    showError: false,
   },
   isLoggedIn() {
     return getWithExpiry("access_token") != null
@@ -68,28 +77,45 @@ export default {
     localStorage.removeItem("access_token")
   },
   reload: async function() {
-    this.state.accountsLoaded = false
-    try {
-      await fetchAccounts(this.ynab, this.state)
-      this.state.accountsLoaded = true
-    } catch(err) {
-      this.error(err)
+    var self = this;
+    async function doReload() {
+      self.state.accountsLoaded = false
+      try {
+        await fetchAccounts(self.ynab, self.state)
+        self.state.accountsLoaded = true
+        self.ok();
+      } catch(err) {
+        self.error(err, doReload)
+      }
     }
+    await doReload()
   },
   reconcile: async function(account, transactions, reconciliationAmount) {
-    this.state.reconciling = true
-    try {
-      await transactionsApi.reconcile(this.ynab, account,
-        transactions, reconciliationAmount)
-      // TODO: only reload the account & its transactions
-      this.reload()
-    } catch(err) {
-      this.error(err)
+    var self = this;
+    async function doReconcile() {
+      self.state.reconciling = true
+      try {
+        await transactionsApi.reconcile(self.ynab, account,
+          transactions, reconciliationAmount)
+        self.ok()
+        self.state.reconciling = false
+        // TODO: only reload the account & its transactions
+        self.reload()
+      } catch(err) {
+        self.error(err, doReconcile)
+      }
     }
-    this.state.reconciling = false
+    await doReconcile()
   },
-  error(err) {
+  error(err, retryFn) {
+    this.state.showError = true
     this.state.error = err.message
+    this.state.errorRetryFn = retryFn
     console.log("Error details: ", err)
   },
+  ok() {
+    this.state.showError = false
+    this.state.error = '';
+    this.state.errorRetryFn = null;
+  }
 };

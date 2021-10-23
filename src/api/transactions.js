@@ -2,10 +2,14 @@
 const ynabApi = require("ynab");
 
 async function getAccountTransactions(ynab, accountId) {
-  // TODO: error handling?
-  const transactionsResponse = await ynab.transactions.getTransactionsByAccount(
-    "default", accountId)
-  return transactionsResponse.data.transactions
+  try {
+    const transactionsResponse = await ynab.transactions.getTransactionsByAccount(
+      "default", accountId)
+    return transactionsResponse.data.transactions
+  } catch (err) {
+    const detail = err.error.detail
+    throw Error(`Error while getting transactions for account, details: ${detail}`)
+  }
 }
 
 async function getAccountTransactionsByType(ynab, account_id) {
@@ -17,7 +21,6 @@ async function getAccountTransactionsByType(ynab, account_id) {
 
 async function createReconciliationTransaction(ynab, account, amount) {
   // TODO: set category ID here based on the one extracted with name "Inflows"
-  // TODO: error handling
   const transaction = {
     account_id: account.id,
     date: ynabApi.utils.getCurrentDateInISOFormat(),
@@ -26,11 +29,15 @@ async function createReconciliationTransaction(ynab, account, amount) {
     payee_name: "YNAB Reconcile: Adjustment",
     memo: "Entered automatically by YNAB Reconcile",
   }
-  await ynab.transactions.createTransaction("default", {transaction})
+  try {
+    await ynab.transactions.createTransaction("default", {transaction})
+  } catch (err) {
+    const detail = err.error.detail
+    throw Error(`Error while creating reconciliation transcation on YNAB: ${detail}`)
+  }
 }
 
 async function reconcile(ynab, account, transactions, reconciliationAmount) {
-  // TODO: error handling?
   if (reconciliationAmount != 0) {
     await createReconciliationTransaction(ynab, account, reconciliationAmount)
   }
@@ -40,8 +47,8 @@ async function reconcile(ynab, account, transactions, reconciliationAmount) {
       await ynab.transactions.updateTransactions("default",
         {transactions: edited})
     } catch(err) {
-        const detail = err.error.detail
-        throw Error(`Error while reconciling on YNAB: ${detail}`)
+      const detail = err.error.detail
+      throw Error(`Error while reconciling transactions on YNAB: ${detail}`)
     }
   }
 }
