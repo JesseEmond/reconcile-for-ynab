@@ -1,4 +1,4 @@
-# ynab-reconcile
+# Reconcile for YNAB
 
 Faciliate account reconciliation, especially on mobile. Quickly mark YNAB transactions to reconcile and edit the final balance, and the it will create a reconciliation transaction for you.
 

@@ -13,7 +13,7 @@
     </div>
     <span>
       Made with <md-icon class="md-accent">favorite</md-icon>,
-      code on <a href="https://github.com/JesseEmond/ynab-reconcile" class="md-accent">GitHub</a>
+      code on <a href="https://github.com/JesseEmond/reconcile-for-ynab" class="md-accent">GitHub</a>
     </span>
   </div>
 </template>

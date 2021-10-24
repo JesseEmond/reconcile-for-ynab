@@ -17,7 +17,8 @@
         Back to Login
       </md-button>
     <span>
-      View source on <a href="https://github.com/JesseEmond/ynab-reconcile" class="md-accent">GitHub</a>
+      View source on
+      <a href="https://github.com/JesseEmond/reconcile-for-ynab" class="md-accent">GitHub</a>
     </span>
   </div>
 </template>

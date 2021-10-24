@@ -1,5 +1,5 @@
 {
-  "name": "ynab-reconcile",
+  "name": "reconcile-for-ynab",
   "version": "0.1.0",
   "private": true,
   "scripts": {

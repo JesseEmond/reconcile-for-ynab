@@ -2,7 +2,7 @@
   <div class="page-container">
     <md-app md-mode="fixed" id="app">
       <md-app-toolbar class="md-primary">
-        <span class="md-title" @click="onHeaderClick">YNAB Reconcile</span>
+        <span class="md-title" @click="onHeaderClick">Reconcile for YNAB</span>
         <div v-if="store.isLoggedIn()"
           class="md-toolbar-section-end">
           <md-button @click="refresh" class="md-icon-button">
