@@ -3,6 +3,7 @@ import VueRouter from 'vue-router'
 import Home from '../views/Home.vue'
 import Login from '../views/Login.vue'
 import Account from '../views/Account.vue'
+import Privacy from '../views/Privacy.vue'
 
 import store from '../store'
 import auth from '../api/auth'
@@ -54,6 +55,12 @@ const routes = [
     path: '/login',
     name: 'Login',
     component: Login,
+    beforeEnter: ifNotAuthenticated,
+  },
+  {
+    path: '/privacy',
+    name: 'Privacy',
+    component: Privacy,
     beforeEnter: ifNotAuthenticated,
   },
   {

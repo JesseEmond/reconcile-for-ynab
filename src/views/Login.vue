@@ -9,6 +9,7 @@
       <p class="md-subheading">
         Quickly bring your accounts up-to-date, even on mobile. Your data stays between your browser and YNAB.
       </p>
+      <div><router-link class="md-accent" to="/privacy">Privacy policy</router-link></div>
     </div>
     <span>
       Made with <md-icon class="md-accent">favorite</md-icon>,
