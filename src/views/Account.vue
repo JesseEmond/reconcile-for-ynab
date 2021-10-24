@@ -35,12 +35,22 @@
           <md-progress-spinner md-mode="indeterminate"></md-progress-spinner>
         </div>
       </md-content>
-      <p :style="{visibility: selectedTransactions.length ? 'visible' : 'hidden'}">
+      <p :style="{visibility: selectedTransactions.length ? 'visible' : 'hidden'}"
+        class="txn-info-msg">
         <md-icon class="md-accent">info</md-icon>
         <span class="md-subheading">
           {{selectedTransactions.length}}
           {{pluralize('transaction', selectedTransactions.length)}}
-          will be marked as reconciled.
+          will be marked as
+          <span v-if="selectedUnclearedTransactions.length == 0">
+            reconciled.
+          </span>
+          <span v-else>
+            reconciled
+            <br/>
+            ({{selectedUnclearedTransactions.length}}
+            currently uncleared).
+          </span>
         </span>
       </p>
     </div>
@@ -104,6 +114,9 @@ export default {
     },
     settings() {
       return this.store.state.settings
+    },
+    selectedUnclearedTransactions() {
+      return this.selectedTransactions.filter(txn => txn.cleared == "uncleared")
     },
   },
   watch: {
@@ -198,5 +211,8 @@ export default {
     font-size: 30px;
     margin-bottom: 5vh;
   }
+}
+.txn-info-msg {
+  width: 89%;
 }
 </style>

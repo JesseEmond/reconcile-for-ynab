@@ -14,6 +14,11 @@
         <md-table-cell md-label="Amount">
           <currency :initialValue="item.amount" :settings="settings"></currency>
         </md-table-cell>
+        <md-table-cell md-label="Cleared"
+          :class="{cleared: item.cleared == 'cleared'}">
+          <md-icon class="cleared-txn" v-if="item.cleared == 'cleared'">check_circle</md-icon>
+          <md-icon class="cleared-txn" v-else>cancel</md-icon>
+        </md-table-cell>
       </md-table-row>
     </md-table>
     <md-empty-state v-else
@@ -49,8 +54,7 @@ export default {
     immediate: true,
   },
   created() {
-    // TODO: add support for uncleared transactions
-    this.transactions = [...this.cleared]
+    this.transactions = [...this.cleared, ...this.uncleared]
     this.selected = [...this.cleared]
   },
   methods: {
@@ -81,5 +85,10 @@ export default {
 }
 .md-empty-state {
   height: 256px;
+}
+.cleared {
+  .md-icon-font {
+    color: #4caf50;
+  }
 }
 </style>
