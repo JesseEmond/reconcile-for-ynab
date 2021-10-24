@@ -41,16 +41,11 @@
         <span class="md-subheading">
           {{selectedTransactions.length}}
           {{pluralize('transaction', selectedTransactions.length)}}
-          will be marked as
-          <span v-if="selectedUnclearedTransactions.length == 0">
-            reconciled.
-          </span>
-          <span v-else>
-            reconciled
-            <br/>
-            ({{selectedUnclearedTransactions.length}}
+          will be marked as reconciled
+          <div v-if="selectedUnclearedTransactions.length > 0">
+            ({{this.selectedUnclearedTransactions.length}}
             currently uncleared).
-          </span>
+          </div>
         </span>
       </p>
     </div>
@@ -214,5 +209,6 @@ export default {
 }
 .txn-info-msg {
   width: 89%;
+  height: 2em;
 }
 </style>

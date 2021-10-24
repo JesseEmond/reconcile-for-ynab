@@ -37,9 +37,6 @@
 </template>
 
 <script>
-// TODO: screenshots on the README.
-// TODO: get app validated
-// TODO: process to appear on Community apps of YNAB?
 import store from './store'
 export default {
   data() {
