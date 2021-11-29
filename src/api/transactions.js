@@ -28,8 +28,9 @@ async function getAccountTransactions(ynab, accountId) {
 
 async function getAccountTransactionsByType(ynab, accountId) {
   const transactions = await getAccountTransactions(ynab, accountId)
-  const cleared = transactions.filter(txn => txn.cleared == "cleared")
-  const uncleared = transactions.filter(txn => txn.cleared == "uncleared")
+  const approved = transactions.filter(txn => txn.approved && !txn.deleted)
+  const cleared = approved.filter(txn => txn.cleared == "cleared")
+  const uncleared = approved.filter(txn => txn.cleared == "uncleared")
   return { cleared, uncleared }
 }
 

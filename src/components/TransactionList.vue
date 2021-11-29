@@ -60,7 +60,8 @@ export default {
   methods: {
     formatDate(dateStr) {
       const date = ynabApi.utils.convertFromISODateString(dateStr)
-      const options = { day: "numeric", month: "short" }
+      // Use UTC since that's what the YNAB API gives us in 'date'.
+      const options = { day: "numeric", month: "short", timeZone: "UTC" }
       // Display based on locale instead of YNAB's configured date format, since we want
       // very short dates liek "Oct 23" as opposed to full ones like "DD-MM-YYYY".
       const format = new Intl.DateTimeFormat(budgetsApi.getLocale(this.settings), options)

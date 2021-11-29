@@ -29,7 +29,7 @@ If, even after marking your transactions to reconcile, your balance is still off
 yarn install
 ```
 
-Create a `.env.local.` file with the following contents:
+Create a `.env.local` file with the following contents:
 ```
 VUE_APP_YNAB_OAUTH_CLIENT_ID = '...'
 ```

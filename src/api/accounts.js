@@ -15,7 +15,7 @@ async function getOpenAccountsByType(ynab) {
 
 async function getOpenAccounts(ynab) {
   const accounts = await getAccounts(ynab);
-  return accounts.filter(acc => !acc.closed);
+  return accounts.filter(acc => !acc.closed && !acc.deleted);
 }
 
 async function getAccounts(ynab) {
