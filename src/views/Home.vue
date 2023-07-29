@@ -14,7 +14,7 @@
     </div>
     <div class="md-title loader-container" v-else>
       <div><md-icon class="md-size-4x md-accent">error</md-icon></div>
-      Oops... Something went wrong.
+      Oops! Something went wrong.
     </div>
   </div>
 </template>
