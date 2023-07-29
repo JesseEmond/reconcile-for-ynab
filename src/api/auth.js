@@ -16,7 +16,7 @@ function oauthPath() {
 }
 
 function tryParseToken(path) {
-  const regex = /access_token=([0-9a-zA-Z]+)/
+  const regex = /access_token=([^=&]+)/
   const match = regex.exec(path)
   if (match) {
     const token = match[1]

@@ -35,7 +35,7 @@ async function ifAuthenticatedBlockingLoad(to, from, next) {
 }
 
 function checkOAuthCallback(to, from, next) {
-  const token = auth.tryParseToken(to.path)
+  const token = auth.tryParseToken(to.path);
   if (token) {
     store.login(token)
     next('/')
